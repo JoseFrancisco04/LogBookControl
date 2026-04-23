@@ -1,1 +1,43 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+
+:root{
+    --color-primario: #0F2A3D;
+    --color-secundario: #F26522;
+    --color-neutral-1: #E6E6E6;
+    --color-neutral-2: #BFC3C7;
+    --color-neutral-3: #6E7378;
+    --color-fondo: #FFFFFF;
+    --color-iconos: #040404;
+
+    --fuente-principal: 'Arial', sans-serif;
+    --fuente-titulo: 1rem;
+    --fuente-pequeña: 0.85rem;
+    --fuente-mediana: 1.2rem;
+    --color-fuente:#000000;
+
+
+    --padding-navbar: 0.5rem 1em;
+    --padding-footer: 1rem 2rem;
+
+    --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo);
+}
+
+a{
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline;
+}

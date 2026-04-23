@@ -1,0 +1,49 @@
+
+.field{
+    margin-bottom: 2rem;
+    
+}
+
+.label{
+    color: var(--color-fuente);
+    font-size: var(--fuente-mediana);
+    font-weight: 200;
+    margin-bottom: 0.5rem;
+}
+
+.input{
+    background-color: var(--color-neutral-2);
+    border: 1px solid var(--color-neutral-2);
+    color: var(--color-primario);
+    border-radius: 4px;
+    height: 2.5rem;
+}
+
+.input::placeholder {
+    color: var(--color-neutral-3);      
+                           
+}
+
+.input:focus{
+    border-color: var(--color-primario) !important;
+    color: var(--color-fuente) !important;
+    box-shadow: 0 0 0 2px rgba(15, 42, 61, 0.15) !important;
+    background-color: var(--color-fondo);
+    outline: none;
+}
+
+.iconLeft{
+    color: var(--color-neutral-3) !important;
+    pointer-events: none;
+}
+
+.iconRight{
+    color: var(--color-neutral-3) !important;
+    pointer-events: auto !important;
+    cursor: pointer;
+
+}
+
+.input:focus ~ .iconLeft, .input:focus ~ .iconRight{
+    color: var(--color-iconos) !important;
+}

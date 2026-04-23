@@ -1,0 +1,20 @@
+
+.wrapper{
+    background-color: var(--color-neutral-1);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+
+}
+
+.fondo{
+    position:absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 520px;
+    z-index: 0;
+
+}
