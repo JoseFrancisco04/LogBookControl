@@ -1,0 +1,96 @@
+
+.navbar{
+    background-color:var(--color-primario); 
+    z-Index: 1; 
+    display:flex;
+    justify-content: center;
+
+}
+
+.navbarInner{
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    width:100%;
+    padding: var(--padding-navbar);
+}
+
+.navbarLogo{
+    height:40px; 
+    margin-right: 12px;
+}
+
+.navbarTitle{
+    color: var(--color-fondo);
+    letter-spacing: 2px;
+    font-size: var(--fuente-titulo);
+}
+
+.navbarAccent{
+    color: var(--color-secundario);
+}
+
+.section{
+    flex:1; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center;
+}
+
+.footer{
+    background-color:var(--color-neutral-2); 
+    padding:var(--padding-footer);
+}
+
+.footerContent{
+    display:flex; 
+    justify-content: space-between; 
+    align-content:center;
+}
+
+.footerText{
+    color: var(--color-primario);
+    font-size: var(--fuente-pequeña); 
+}
+
+
+.card{
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--sombra-card);
+    
+   
+}
+
+.cardHeader{
+    background-color: var(--color-neutral-2);
+    padding: 4rem 2rem;
+    
+}
+
+.cardLogo{
+    height: 45px;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.cardTitulo{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primario);
+    margin-bottom: 0.1rem;
+}
+
+.cardSubtitulo{
+    font-size: var(--fuente-pequeña);
+    color: var(--color-neutral-3);
+}
+
+.cardBody{
+    background-color: var(--color-neutral-1);
+    padding: 4rem 2rem;
+    
+}
+
+
