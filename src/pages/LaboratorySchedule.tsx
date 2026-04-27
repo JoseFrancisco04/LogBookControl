@@ -19,19 +19,30 @@ export const LaboratorySchedule = () => {
                 <div className={`container`}>
                     <div className='columns is-centered is-mobile'>
                         <div className='column is-half is-offset-one-quarter'>
+                            <h1>Laboratorio {labNumber} 🥵</h1>
                             <table className="table is-striped">
-                        <thead>
-                            <tr>
-                                <th>Laboratorio {labNumber} 🥵</th>
-                            </tr>
-                        </thead>
+                                <thead>
+                                    <tr>
+                                        <th>Horario</th>
+                                        <th>Clase</th>
+                                        <th>Docente</th>
+                                        <th>Grupo</th>
+                                        <th>Carrera</th>
+                                    </tr>
+                                </thead>
 
-                        <tbody>
-                            {labData.schedules.map((hour, index) => (
-                                <tr><th key={index}>{hour}</th></tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                <tbody>
+                                    {labData.schedules.map((hour, index) => (
+                                        <tr key={index}>
+                                            <th>{hour.hour}</th>
+                                            <th>{hour.class}</th>
+                                            <th>{hour.teacher}</th>
+                                            <th>{hour.group}</th>
+                                            <th>{hour.career}</th>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

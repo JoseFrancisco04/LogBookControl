@@ -4,17 +4,27 @@ import logoTec from "../assets/logoTec.png";
 import { Link, useNavigate } from "react-router-dom";
 import CardMap from "../components/CardMap";
 import type { ILaboratoryData } from "../models/ILaboratoryData";
+import { getSchedules } from "../services/ScheduleService";
 
+function loadSchedules () {
+    return getSchedules();
+}
 
 export default function MapLaboratory() {
+    // Objeto encargado de la navegación
     const navigate = useNavigate();
-
+    // Navegar y enviar datos a un destino, en este caso ScheduleL...
     const viewHorary = (labNumber: number, labData: ILaboratoryData) => {
-        navigate(`/horario/${labNumber}`, { state: labData });
+        // Enviamos solo los horarios del laboratorio selecionado
+        const laboratoryData: ILaboratoryData = {
+            schedules: labData.schedules.filter(data => data.laboratory == labNumber)
+        };
+        console.log(laboratoryData)
+        navigate(`/horario/${labNumber}`, { state: laboratoryData });
     }
-
+    // Plantilla de los datos que van a enviar
     const dataToSend: ILaboratoryData = {
-        schedules: ["9 a 10", "11 a 12", "12 a 13"]
+        schedules: loadSchedules()
     };
 
     return (
