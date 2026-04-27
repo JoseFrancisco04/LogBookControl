@@ -1,17 +1,21 @@
-import Structure from "../components/Structure.tsx";
+import Structure from "../components/Structure";
 import styles from "./Login.module.css";
-import styleMap from "./MapLaboratory.module.css";
 import logoTec from "../assets/logoTec.png";
-import { useNavigate } from "react-router-dom";
-import CardMap from "../components/CardMap.tsx";
+import { Link, useNavigate } from "react-router-dom";
+import CardMap from "../components/CardMap";
+import type { ILaboratoryData } from "../models/ILaboratoryData";
 
 
 export default function MapLaboratory() {
     const navigate = useNavigate();
 
-    const viewHorary = (labNumber: number) => {
-        navigate("/horario/" + labNumber);
+    const viewHorary = (labNumber: number, labData: ILaboratoryData) => {
+        navigate(`/horario/${labNumber}`, { state: labData });
     }
+
+    const dataToSend: ILaboratoryData = {
+        schedules: ["9 a 10", "11 a 12", "12 a 13"]
+    };
 
     return (
         <Structure>
@@ -26,9 +30,9 @@ export default function MapLaboratory() {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
-                            <a className="button is-primary">
+                            <Link to="/login" className="button is-primary">
                                 Log in
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -37,13 +41,13 @@ export default function MapLaboratory() {
             <section className={`section ${styles.section}`}>
                 <div className={`container`}>
                     <div className='columns is-centered is-mobile'>
-                        <CardMap laboratoryNumber="1" classInProgress="POO" onClick={() => viewHorary(1)} />
-                        <CardMap laboratoryNumber="2" classInProgress="Pistología" onClick={() => viewHorary(2)} />
+                        <CardMap laboratoryNumber="1" classInProgress="POO" onClick={() => viewHorary(1, dataToSend)} />
+                        <CardMap laboratoryNumber="2" classInProgress="Pistología" onClick={() => viewHorary(2, dataToSend)} />
                     </div>
 
                     <div className='columns is-centered is-mobile'>
-                        <CardMap laboratoryNumber="3" classInProgress="Pistología" onClick={() => viewHorary(2)} />
-                        <CardMap laboratoryNumber="4" classInProgress="Pistología" onClick={() => viewHorary(4)} />
+                        <CardMap laboratoryNumber="3" classInProgress="Pistología" onClick={() => viewHorary(3, dataToSend)} />
+                        <CardMap laboratoryNumber="4" classInProgress="Pistología" onClick={() => viewHorary(4, dataToSend)} />
                     </div>
                 </div>
             </section>
