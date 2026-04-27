@@ -15,6 +15,7 @@ function Login(){
                         <span className={styles.navbarAccent}>ACCESO AL SISTEMA</span>
                     </strong>
                 </div>
+                    <button className="navbar-item">Ver Horarios</button>
             </nav>
            <section className={`section ${styles.section}`}> 
                 <div className='container'>

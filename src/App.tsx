@@ -1,10 +1,14 @@
-import {useState} from 'react'
-import Login from './pages/Login'
+//import Login from './pages/Login'
+//import MapLaboratory from "./pages/MapLaboratory.tsx";
+import { RouterProvider } from "react-router-dom"
+import { router } from "./router/Routes"
 
 function App() {
     
     return (
-        <Login />
+         //<Login />
+        //<MapLaboratory/>
+        <RouterProvider router={router} />
     )
 }
 
