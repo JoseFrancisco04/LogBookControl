@@ -16,5 +16,98 @@
     transform: translateY(-50%);
     width: 520px;
     z-index: 0;
+    opacity:0.5;
 
+}
+
+
+.navbar{
+    background-color:var(--color-primario); 
+    z-Index: 1; 
+    display:flex;
+    justify-content: center;
+
+}
+
+.navbarInner{
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width:100%;
+    padding: var(--padding-navbar);
+    min-height: 70px;
+}
+
+.navLeft{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.navCenter {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap; 
+}
+
+.navRight {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.navbarBrand{
+    display: flex;
+    align-items: center;
+}
+
+.navbarActions{
+    display: flex;
+    gap: 1rem;
+}
+
+.navbarLogo{
+    height:40px; 
+    margin-right: 12px;
+}
+
+.navbarTitle{
+    color: var(--color-fondo);
+    letter-spacing: 2px;
+    font-size: var(--fuente-titulo);
+}
+
+.navbarAccent{
+    color: var(--color-secundario);
+}
+
+.footer{
+    background-color:var(--color-fondo); 
+    padding:var(--padding-footer);
+    border-top: 1px solid var(--color-neutral-2);
+}
+
+.footerContent{
+    display:flex; 
+    justify-content: space-between; 
+    align-content:center;
+}
+
+.footerActions{
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footerText{
+    color: var(--color-neutral-3);
+    font-size: var(--fuente-pequeña); 
+}
+
+@media (max-width: 768px) {
+    .navbarInner{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
 }
