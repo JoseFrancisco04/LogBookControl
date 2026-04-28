@@ -4,28 +4,22 @@ import logoTec from "../assets/logoTec.png";
 import { Link, useNavigate } from "react-router-dom";
 import CardMap from "../components/CardMap";
 import type { ILaboratoryData } from "../models/ILaboratoryData";
-import { getSchedules } from "../services/ScheduleService";
-
-function loadSchedules () {
-    return getSchedules();
-}
+import { getScheduleFrom } from "../services/ScheduleService";
 
 export default function MapLaboratory() {
     // Objeto encargado de la navegación
     const navigate = useNavigate();
     // Navegar y enviar datos a un destino, en este caso ScheduleL...
-    const viewHorary = (labNumber: number, labData: ILaboratoryData) => {
-        // Enviamos solo los horarios del laboratorio selecionado
-        const laboratoryData: ILaboratoryData = {
-            schedules: labData.schedules.filter(data => data.laboratory == labNumber)
-        };
-        console.log(laboratoryData)
-        navigate(`/horario/${labNumber}`, { state: laboratoryData });
+    const viewHorary = (labNumber: number) => {
+
+        getScheduleFrom(labNumber.toString()).then((data) => {
+            // Enviamos solo los horarios del laboratorio selecionado
+            const laboratoryData: ILaboratoryData = {
+                schedules: data
+            };
+            navigate(`/horario/${labNumber}`, { state: laboratoryData });
+        });
     }
-    // Plantilla de los datos que van a enviar
-    const dataToSend: ILaboratoryData = {
-        schedules: loadSchedules()
-    };
 
     return (
         <Structure>
@@ -51,13 +45,13 @@ export default function MapLaboratory() {
             <section className={`section ${styles.section}`}>
                 <div className={`container`}>
                     <div className='columns is-centered is-mobile'>
-                        <CardMap laboratoryNumber="1" classInProgress="POO" onClick={() => viewHorary(1, dataToSend)} />
-                        <CardMap laboratoryNumber="2" classInProgress="Pistología" onClick={() => viewHorary(2, dataToSend)} />
+                        <CardMap laboratoryNumber="1" classInProgress="POO" onClick={() => viewHorary(1)} />
+                        <CardMap laboratoryNumber="2" classInProgress="Pistología" onClick={() => viewHorary(2)} />
                     </div>
 
                     <div className='columns is-centered is-mobile'>
-                        <CardMap laboratoryNumber="3" classInProgress="Pistología" onClick={() => viewHorary(3, dataToSend)} />
-                        <CardMap laboratoryNumber="4" classInProgress="Pistología" onClick={() => viewHorary(4, dataToSend)} />
+                        <CardMap laboratoryNumber="3" classInProgress="Pistología" onClick={() => viewHorary(3)} />
+                        <CardMap laboratoryNumber="4" classInProgress="Pistología" onClick={() => viewHorary(4)} />
                     </div>
                 </div>
             </section>

@@ -18,7 +18,7 @@ export const LaboratorySchedule = () => {
             <section className={`section ${styles.section}`}>
                 <div className={`container`}>
                     <div className='columns is-centered is-mobile'>
-                        <div className='column is-half is-offset-one-quarter'>
+                        <div className='column is-half'>
                             <h1>Laboratorio {labNumber} 🥵</h1>
                             <table className="table is-striped">
                                 <thead>
@@ -34,10 +34,10 @@ export const LaboratorySchedule = () => {
                                 <tbody>
                                     {labData.schedules.map((hour, index) => (
                                         <tr key={index}>
-                                            <th>{hour.hour}</th>
-                                            <th>{hour.class}</th>
-                                            <th>{hour.teacher}</th>
-                                            <th>{hour.group}</th>
+                                            <th>{hour.hora_inicio + ' - ' + hour.hora_fin}</th>
+                                            <th>{hour.materia}</th>
+                                            <th>{hour.maestro}</th>
+                                            <th>{hour.grupo_id}</th>
                                             <th>{hour.career}</th>
                                         </tr>
                                     ))}
