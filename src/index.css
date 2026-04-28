@@ -1,25 +1,32 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
 :root{
     --color-primario: #0F2A3D;
     --color-secundario: #F26522;
-    --color-neutral-1: #E6E6E6;
+
+    --color-neutral-1: ##F4F7F9;
     --color-neutral-2: #BFC3C7;
     --color-neutral-3: #6E7378;
     --color-fondo: #FFFFFF;
+    --color-fuente:#111827;
     --color-iconos: #040404;
 
-    --fuente-principal: 'Arial', sans-serif;
+    --fuente-principal: 'Inter', system-ui, -apple-system, sans-serif;
     --fuente-titulo: 1rem;
-    --fuente-pequeña: 0.85rem;
-    --fuente-mediana: 1.2rem;
-    --color-fuente:#000000;
+    --fuente-pequeña: 0.875rem;
+    --fuente-mediana: 1.25rem;
+    --fuente-grande: 2.25rem;
+    
 
 
-    --padding-navbar: 0.5rem 1em;
-    --padding-footer: 1rem 2rem;
+    --padding-navbar: 1rem 2em;
+    --padding-footer: 1.5rem 2rem;
 
-    --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --sombra-card: 0 10px 25px -5px rgba(15,42,61,0.08), 0 8px 10px -6px rgba(15,42,61,0.04)
+    --sombra-hover: 0 20px 25px -5px rgba(15,42,61,0.12) 0 10px 10px -5px rgba(15,42,61,0.04)
+
+    --transicion-suave: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
 
 }
 
@@ -31,7 +38,9 @@
 
 body{
     font-family: var(--fuente-principal);
+    background-color: var(--color-neutral-1);
     background-color: var(--color-fondo);
+    -webkit-font-smoothing: antialiased; 
 }
 
 a{

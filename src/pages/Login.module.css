@@ -1,96 +1,60 @@
 
-.navbar{
-    background-color:var(--color-primario); 
-    z-Index: 1; 
-    display:flex;
-    justify-content: center;
-
-}
-
-.navbarInner{
-    display:flex;
-    align-items: center;
-    justify-content:center;
-    width:100%;
-    padding: var(--padding-navbar);
-}
-
-.navbarLogo{
-    height:40px; 
-    margin-right: 12px;
-}
-
-.navbarTitle{
-    color: var(--color-fondo);
-    letter-spacing: 2px;
-    font-size: var(--fuente-titulo);
-}
-
-.navbarAccent{
-    color: var(--color-secundario);
-}
-
 .section{
     flex:1; 
     display:flex; 
     align-items:center; 
     justify-content:center;
+    padding: 2rem;
 }
-
-.footer{
-    background-color:var(--color-neutral-2); 
-    padding:var(--padding-footer);
-}
-
-.footerContent{
-    display:flex; 
-    justify-content: space-between; 
-    align-content:center;
-}
-
-.footerText{
-    color: var(--color-primario);
-    font-size: var(--fuente-pequeña); 
-}
-
 
 .card{
-    padding: 0;
-    border-radius: 8px;
+    background-color: var(--color-fondo);
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--sombra-card);
+    padding: 3rem 2.5rem;
+    border: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+
     
-   
 }
 
 .cardHeader{
-    background-color: var(--color-neutral-2);
-    padding: 4rem 2rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
     
 }
 
 .cardLogo{
-    height: 45px;
-    margin-bottom: 0.75rem;
+    height: 60px;
+    margin-bottom: 0 auto 1rem auto;
     display: block;
 }
 
 .cardTitulo{
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: var(--fuente-mediana);
+    font-weight: 800;
     color: var(--color-primario);
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.2rem;
+    letter-spacing: -0.5px;
 }
 
 .cardSubtitulo{
     font-size: var(--fuente-pequeña);
     color: var(--color-neutral-3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .cardBody{
-    background-color: var(--color-neutral-1);
-    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     
+}
+
+.cardBody > button{
+    margin-top: 1.5rem;
 }
 
 
