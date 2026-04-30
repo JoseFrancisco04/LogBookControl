@@ -3,10 +3,16 @@ import Structure from '../components/Structure';
 import styles from './Login.module.css'
 import Button from '../components/Button.tsx';
 import InputField from '../components/InputField.tsx';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
+    const navigate = useNavigate();
     return (
-        <Structure title='INICIO DE SESIÓN' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Inicio de Sesión'>
+        <Structure title='INICIO DE SESIÓN' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Inicio de Sesión'
+            navbarActions={<>
+                <Button texto="Ver Horarios" variante="inverso" icono="fas fa-map-signs" onclick={() => navigate("/")}></Button>
+            </>}>
             <section className={`section ${styles.section}`}>
                 <div className='container'>
                     <div className='columns is-centered'>
@@ -21,7 +27,7 @@ function Login() {
                                     <InputField label="Usuario" placeholder="Ingrese su usuario" type='text' icon='fa-user' />
                                     <InputField label="Contraseña" placeholder="••••••••" type='password' icon='fa-lock' iconRight='fa-eye' />
                                     <div style={{ marginTop: '1.5rem' }}>
-                                    <Button texto="Iniciar Sesión" icono='fa-sign-in-alt' variante='primario' anchoCompleto={true} onclick={() => alert('Iniciando sesión...')} />
+                                        <Button texto="Iniciar Sesión" icono='fa-sign-in-alt' variante='primario' anchoCompleto={true} onclick={() => alert('Iniciando sesión...')} />
                                     </div>
                                 </div>
                             </div>

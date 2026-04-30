@@ -1,0 +1,8 @@
+.cardLaboratory{
+    background: var(--color-primario);
+}
+
+.columLaboratory:hover{
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
