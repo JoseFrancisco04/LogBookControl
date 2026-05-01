@@ -9,12 +9,13 @@ export const LaboratorySchedule = () => {
 
     const labData = location.state as ILaboratoryData;
 
-    if (!labData || parseInt(labNumber!) > 4) {
+    // En algunos casos el if no entra y la pantalla marca error
+    if (!labData || !labData.schedules || parseInt(labNumber!) > 4) {
         return <Navigate to="/" replace />;
     }
 
     return (
-        <Structure>
+        <Structure title='HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Laboratorio ${labNumber}`}>
             <section className={`section ${styles.section}`}>
                 <div className={`container`}>
                     <div className='columns is-centered is-mobile'>
@@ -32,7 +33,7 @@ export const LaboratorySchedule = () => {
                                 </thead>
 
                                 <tbody>
-                                    {labData.schedules.map((hour, index) => (
+                                    {labData?.schedules?.map((hour, index) => (
                                         <tr key={index}>
                                             <th>{hour.hora_inicio + ' - ' + hour.hora_fin}</th>
                                             <th>{hour.materia}</th>
