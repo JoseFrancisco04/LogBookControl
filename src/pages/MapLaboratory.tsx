@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import CardMap from "../components/CardMap";
 import type { ILaboratoryData } from "../models/ILaboratoryData";
 import { getScheduleFrom } from "../services/ScheduleService";
-import { useEffect, useState } from "react";
-import type { ISchedule } from "../models/ISchedule";
+import { useState } from "react";
+// import type { ISchedule } from "../models/ISchedule";
 
 export default function MapLaboratory() {
     const [navigating, setNavigating] = useState(false);
@@ -15,15 +15,21 @@ export default function MapLaboratory() {
 
     // Objeto encargado de la navegación
     const navigate = useNavigate();
+    
     // Navegar y enviar datos a un destino, en este caso ScheduleL...
     const viewHorary = (labNumber: number) => {
         console.log("Navegando al lab " + labNumber);
         setNavigating(true);
         getScheduleFrom(labNumber.toString()).then((data) => {
-            // Enviamos solo los horarios del laboratorio selecionado
+
+            // Enviamos solo los horarios de hoy del laboratorio selecionado
+            const today = new Date().toLocaleDateString('es-ES', { weekday: 'long' });
+            data = data!.filter(schedule => schedule.dia_semana.toLocaleLowerCase() == today);
+
             const laboratoryData: ILaboratoryData = {
                 schedules: data
             };
+
             navigate(`/horario/${labNumber}`, { state: laboratoryData });
         }).catch(() => {
             setNavigating(false);
@@ -58,13 +64,13 @@ export default function MapLaboratory() {
                     ) : (
                         <div className={`container`}>
                             <div className='columns is-centered is-mobile'>
-                                <CardMap laboratoryNumber="1" classInProgress="POO" onClick={() => viewHorary(1)} />
-                                <CardMap laboratoryNumber="2" classInProgress="Pistología" onClick={() => viewHorary(2)} />
+                                <CardMap laboratoryNumber="1" classInProgress="" onClick={() => viewHorary(1)} />
+                                <CardMap laboratoryNumber="2" classInProgress="" onClick={() => viewHorary(2)} />
                             </div>
 
                             <div className='columns is-centered is-mobile'>
-                                <CardMap laboratoryNumber="3" classInProgress="Pistología" onClick={() => viewHorary(3)} />
-                                <CardMap laboratoryNumber="4" classInProgress="Pistología" onClick={() => viewHorary(4)} />
+                                <CardMap laboratoryNumber="3" classInProgress="" onClick={() => viewHorary(3)} />
+                                <CardMap laboratoryNumber="4" classInProgress="" onClick={() => viewHorary(4)} />
                             </div>
                         </div>
                     )}

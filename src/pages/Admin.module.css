@@ -1,0 +1,34 @@
+/* Estilos personalizados para reforzar el "Look & Feel" de Excel */
+.scheduleTable td {
+    height: 60px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.scheduleTable td:hover {
+    background-color: #f0f5ff !important;
+}
+
+.tr{
+    background-color: var(--color-fondo);
+}
+
+.timeColumn {
+    background-color: #fafafa;
+    font-weight: bold;
+    width: 120px;
+    text-align: center !important;
+}
+
+/* Clase para celdas ya ocupadas */
+.is-occupied {
+    background-color: #effaf5 !important;
+    /* Un verde muy sutil */
+    border-left: 4px solid #48c78e !important;
+}
+
+.occupied-info {
+    font-size: 0.75rem;
+}
