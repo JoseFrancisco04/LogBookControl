@@ -24,10 +24,6 @@ export const router = createBrowserRouter([
         element: <Login />
     },
     {
-        path: '/bitacora',
-        element: <LogBook />
-    },
-    {
         // Envolvemos esta sección con nuestro guardia
         element: <ProtectedRoute />,
         children: [
@@ -35,6 +31,10 @@ export const router = createBrowserRouter([
                 path: '/admin',
                 element: <Admin />,
             },
+            {
+                path: '/bitacora',
+                element: <LogBook />
+            }
             // Si mañana agregas más pantallas para el admin, las pones aquí:
             // { path: '/admin/configuracion', element: <Configuracion /> }
         ],

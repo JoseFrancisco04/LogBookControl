@@ -4,7 +4,6 @@
 // import CardSchedule from "../components/CardSchedule";
 // import type { ISchedule } from "../models/ISchedule";
 // import styles from "./LaboratorySchedule.module.css"
-// import adminS from "./Admin.module.css"
 
 import { useState } from "react";
 import type { ISchedule } from "../models/ISchedule";
@@ -12,13 +11,18 @@ import Structure from "../components/Structure";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
+import adminS from "./Admin.module.css"
+// import { saveScheduleData } from "../services/ScheduleService";
 
-// 1. Defines la forma de tus datos con TypeScript
-// interface ScheduleEntry {
-//   subject: string;
-//   teacher: string;
-//   group: string;
-// }
+function getCareer(grupo_id: string): string {
+    return grupo_id.includes("sis") ? "var(--color-sistemas)" :
+        grupo_id.includes("inf") ? "var(--color-informatica)" :
+            grupo_id.includes("ind") ? "var(--color-industrial)" :
+                grupo_id.includes("adm") ? "var(--color-administracion)" :
+                    grupo_id.includes("ele") ? "var(--color-electrica)" :
+                        grupo_id.includes("mec") ? "var(--color-mecatronica)" :
+                            "var(--color-neutral-2";
+}
 
 // Clave única por celda, ej: "lunes-8:00"
 type CellKey = string;
@@ -26,12 +30,11 @@ type CellKey = string;
 export default function Admin() {
     const navigate = useNavigate();
 
-    // 2. Los tres estados clave
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCell, setSelectedCell] = useState<CellKey | null>(null);
     const [scheduleData, setScheduleData] = useState<Record<CellKey, ISchedule>>({});
 
-    // 3. Estado local del formulario
+    // Estado local del formulario
     const [formData, setFormData] = useState<ISchedule>({
         materia: "",
         dia_semana: "",
@@ -76,9 +79,14 @@ export default function Admin() {
         setIsModalOpen(false); // cierra el modal
     };
 
-    // --- DATOS DE EJEMPLO (adáptalos a tu horario real) ---
+    const saveSchedule = () => {
+
+        console.log(Object.keys(scheduleData));
+    }
+
+    // DATOS DE EJEMPLO 
     const hours = ["7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
-    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"];
 
     return (
         <Structure title='DEFINIR HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Administrador`}
@@ -93,22 +101,66 @@ export default function Admin() {
             <section className={`section`}>
                 <div className={`container`}>
 
-                    <h1 className={`title has-text-centered mb-6 has-text-grey-dark`}>Laboratorio de Cómputo 1</h1>
+                    <nav className="level">
+
+                        <div className="level-left">
+                            <div className="level-item">
+                                <div>
+                                    <span className="heading icon-text">
+                                        <span className="icon is-medium">
+                                            <i className="fas fa-calendar-week fa-2x" style={{ color: "var(--color-iconos)" }}></i>
+                                        </span>
+                                        <span className={`title has-text-centered ml-4`}
+                                            style={{ color: "var(--color-fuente)" }}>
+                                            Laboratorio de Cómputo
+                                        </span>
+                                    </span>
+                                    <p style={{ color: "var(--color-fuente)" }}>
+                                        Programación de prácticas en laboratorios.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="level-right">
+                            <div className="level-item">
+                                <div className="field">
+                                    <label className="label has-text-centered" style={{ color: "var(--color-fuente)" }}>Laboratorio</label>
+                                    <div className="control has-icons-left is-expanded">
+                                        <span className="select is-mobile">
+                                            <select className="has-text-black" style={{ backgroundColor: "var(--color-fondo)" }}>
+                                                <option value="0">Selecciona una opción</option>
+                                                <option value="1">Laboratorio 1</option>
+                                                <option value="2">Laboratorio 2</option>
+                                                <option value="3">Laboratorio 3</option>
+                                                <option value="4">Laboratorio 4</option>
+                                            </select>
+                                        </span>
+                                        <span className="icon is-small is-left">
+                                            <i className="fas fa-computer has-text-black"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nav>
+
                     <div>
                         {/* ====== TABLA ====== */}
-                        <table className="table is-bordered is-fullwidth" style={{ backgroundColor: "var(--color-fondo)" }}>
+                        <table className="table is-bordered is-fullwidth " style={{ backgroundColor: "var(--color-fondo)" }}>
                             <thead>
-                                <tr style={{ backgroundColor: "var(--color-primario)" }}>
-                                    <th>Hora</th>
+                                <tr>
+                                    <th className="has-text-centered" style={{ color: "var(--color-fuente)" }}>Hora</th>
                                     {days.map((day) => (
-                                        <th key={day}>{day}</th>
+                                        <th className="has-text-centered" key={day} style={{ color: "var(--color-fuente)" }}>{day}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {hours.map((hour) => (
                                     <tr key={hour}>
-                                        <td style={{ backgroundColor: "var(--color-primario)" }}>{hour}</td>
+                                        <td className="has-text-centered" style={{ color: "var(--color-fuente)" }}>{hour}</td>
                                         {days.map((day) => {
                                             const cellKey = `${day}-${hour}`;        // clave única
                                             const cellInfo = scheduleData[cellKey];  // busca si hay datos
@@ -117,20 +169,25 @@ export default function Admin() {
                                                 <td
                                                     key={cellKey}
                                                     onClick={() => handleCellClick(cellKey)}
-                                                    style={{ cursor: "pointer", minWidth: "120px" }}
-                                                    className={cellInfo ? " has-background-info has-text-black has-text-centered" : "has-text-centered"}
+                                                    style={{
+                                                        cursor: "pointer", minWidth: "120px",
+                                                        backgroundColor: cellInfo ? getCareer(cellInfo.grupo_id.toLocaleLowerCase()) : ""
+                                                    }}
+                                                    className={cellInfo ? `has-text-black ${adminS.cellInfoVisible}` : "has-text-centered"}
                                                 >
-                                                    {/* Si hay datos los muestra, si no muestra un hint */}
+                                                    {/* Falta agregar el color por carrera */}
                                                     {cellInfo ? (
                                                         <div>
-                                                            <strong>{cellInfo.materia}</strong>
+                                                            <small><b>{cellInfo.materia}</b></small>
                                                             <br />
                                                             <small>{cellInfo.maestro}</small>
                                                             <br />
                                                             <small>{cellInfo.grupo_id}</small>
                                                         </div>
                                                     ) : (
-                                                        <span className="has-text-grey-light">+ Agregar</span>
+                                                        <span className="has-text-grey-light">
+                                                            <i className="fa-solid fa-plus"></i>
+                                                        </span>
                                                     )}
                                                 </td>
                                             );
@@ -146,7 +203,7 @@ export default function Admin() {
                             <div className="modal-background" onClick={() => setIsModalOpen(false)} />
                             <div className="modal-card">
                                 <header className="modal-card-head" style={{ backgroundColor: "var(--color-primario)" }}>
-                                    <span className="icon is-medium mr-2">
+                                    <span className={`icon is-medium mr-5 ${adminS.iconHead}`}>
                                         <i className="far fa-calendar fa-2x"></i>
                                     </span>
                                     <p className="modal-card-title">
@@ -158,10 +215,10 @@ export default function Admin() {
                                     />
                                 </header>
 
-                                <section className="modal-card-body" style={{ backgroundColor: "var(--color-fondo)" }}>
+                                <section className="modal-card-body" style={{ backgroundColor: "var(--color-fondo)", borderBlockEnd: "2px solid var(--color-neutral-2)" }}>
                                     {/* Formulario */}
-                                    <div className="field">
-                                        <label className="label" style={{color: "var(--color-fuente)"}}>Carrera</label>
+                                    {/* <div className="field">
+                                        <label className="label" style={{ color: "var(--color-fuente)" }}>Carrera</label>
                                         <div className="control has-icons-left is-expanded">
                                             <span className="select is-fullwidth">
                                                 <select className="has-text-black" style={{ backgroundColor: "var(--color-fondo)" }}>
@@ -176,7 +233,7 @@ export default function Admin() {
                                             </span>
                                         </div>
                                     </div>
-
+ */}
 
                                     <InputField
                                         label={"Materia"}
@@ -249,7 +306,7 @@ export default function Admin() {
                                     <div className="field is-grouped">
 
                                         <p className="control">
-                                            <button className="button" style={{ backgroundColor: "var(--color-secundario)", border: "0px" }} onClick={handleSubmit}>
+                                            <button className={`button ${adminS.buttonHover}`} style={{ backgroundColor: "var(--color-secundario)", border: "0px" }} onClick={handleSubmit}>
                                                 <span className="icon is-small">
                                                     <i className="fas fa-save"></i>
                                                 </span>
@@ -258,7 +315,7 @@ export default function Admin() {
                                         </p>
 
                                         <p className="control">
-                                            <button className="button is-danger is-outlined" onClick={() => setIsModalOpen(false)}>
+                                            <button className={`button is-danger is-outlined ${adminS.buttonHover}`} onClick={() => setIsModalOpen(false)}>
                                                 <span className="icon is-small">
                                                     <i className="fas fa-times"></i>
                                                 </span>
@@ -271,6 +328,24 @@ export default function Admin() {
                             </div>
                         </div>
                     </div>
+
+                    <div className="buttons">
+                        <button className={`button ${adminS.buttonHover}`} style={{ backgroundColor: "var(--color-secundario)", border: "0px" }}
+                            onClick={saveSchedule}>
+                            <span className="icon">
+                                <i className="fas fa-save"></i>
+                            </span>
+                            <span>Guardarr</span>
+                        </button>
+
+                        <button className={`button is-danger is-outlined ${adminS.buttonHover}`}>
+                            <span className="icon">
+                                <i className="fas fa-times"></i>
+                            </span>
+                            <span>Cancelar</span>
+                        </button>
+                    </div>
+
                 </div>
             </section >
         </Structure >

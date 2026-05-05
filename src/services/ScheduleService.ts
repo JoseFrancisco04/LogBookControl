@@ -12,31 +12,6 @@ export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[] | 
     }
 }
 
-// export const getScheduleFromTest = async (labNumber: string) => {
-//     try {
-//         console.log(labNumber);
-        
-//         const data: ISchedule[] = [
-//             {
-//                 hora_inicio: "14:23",
-//                 hora_fin: "15:30",
-//                 materia: "POO",
-//                 maestro: "clau",
-//                 grupo_id: "G1MSIS08",
-//                 career: "sistemas",
-//             },
-//             {
-//                 hora_inicio: "14:23",
-//                 hora_fin: "15:30",
-//                 materia: "Logica",
-//                 maestro: "sabdiel",
-//                 grupo_id: "G1MSIS08",
-//                 career: "informatica",
-//             },
-//         ];
-
-//         return await data;
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
+export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
+    await console.log(JSON.stringify(schedule));
+}

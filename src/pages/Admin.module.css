@@ -11,7 +11,7 @@
     background-color: #f0f5ff !important;
 }
 
-.tr{
+.tr {
     background-color: var(--color-fondo);
 }
 
@@ -31,4 +31,23 @@
 
 .occupied-info {
     font-size: 0.75rem;
+}
+
+/* .cellInfoVisible{
+    background-color: #48c78e !important;
+} */
+
+.iconHead {
+    /* padding: 10px;
+    border-radius: 5px;
+    background-color: #3793d4; */
+}
+
+.buttonHover {
+    transition: all .5s ease;
+}
+
+.buttonHover:hover {
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
 }

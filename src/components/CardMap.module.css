@@ -1,8 +1,14 @@
 .cardLaboratory{
-    background: var(--color-primario);
+    background-color: var(--color-fondo);
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3); ;
+}
+
+.columLaboratory{
+    color: blue;
 }
 
 .columLaboratory:hover{
     transform: translateY(-10px);
     transition: all 0.2s ease;
+    
 }

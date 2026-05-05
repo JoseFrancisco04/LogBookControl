@@ -12,6 +12,13 @@
     --color-fuente:#111827;
     --color-iconos: #040404;
 
+    --color-sistemas: #f0f340;
+    --color-informatica: #669fe0;
+    --color-industrial: #58c46f;
+    --color-administracion: #f75f78;
+    --color-electrica: #ff2d2d;
+    --color-mecatronica: #ff7300;
+
     --fuente-principal: 'Inter', system-ui, -apple-system, sans-serif;
     --fuente-titulo: 1rem;
     --fuente-pequeña: 0.875rem;

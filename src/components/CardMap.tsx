@@ -13,14 +13,14 @@ export default ({ laboratoryNumber, classInProgress, onClick }: Props) => {
             <div className={`card ${styles.cardLaboratory}`} onClick={onClick}>
                 <div className="card-content">
                     <div className="media">
-                        <div className="media-left">
+                        <div className="media-left" style={{backgroundColor: "#92beff98", borderRadius: "50px"}}>
                             <span className="icon is-large">
-                                <i className="fa-solid fa-computer fa-bounce fa-2x"></i>
+                                <i className="fa-solid fa-computer fa-fade fa-lg has-text-link"></i>
                             </span>
                         </div>
                         <div className="media-content">
-                            <p className="title is-4">Laboratorio {laboratoryNumber}</p>
-                            <p className="subtitle is-6">Clase en curso: {classInProgress}</p>
+                            <p className="title is-4 has-text-black">Laboratorio {laboratoryNumber}</p>
+                            <p className="subtitle is-6 has-text-grey-darker">Clase en curso: {classInProgress}</p>
                         </div>
                     </div>
                 </div>

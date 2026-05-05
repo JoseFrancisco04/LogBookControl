@@ -4,5 +4,8 @@ export interface ISchedule {
     hora_inicio: string;
     hora_fin: string;
     maestro: string;
-    grupo_id: string;
+    grupo_id: string; 
+
+    fase?: number;
+    laboratorio?: number;
 }
