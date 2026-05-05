@@ -2,14 +2,17 @@ import Button from "../components/Button"
 import Structure from "../components/Structure"
 import styles from "./LogBook.module.css"
 import logoTec from "../assets/logoTec.png"
+import { useState } from "react"
+import LogoutModal from "../components/LogoutModal"
 
 
 export default function LogBook() {
+    const[isLogoutModal, setIsLogoutModal] = useState(false);
     return (
         <Structure title='BITÁCORA' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Computo | Bitácora'
             navbarActions={<>
                 <Button texto="Imprimir Bítacora" variante="inverso" icono="fas fa-print"></Button>
-                <Button texto="Cerrar Sesión" variante="inverso" iconIzquierdo="fa-sign-out-alt"></Button>
+                <Button texto="Cerrar Sesión" variante="inverso" iconIzquierdo="fa-sign-out-alt" onclick={()=> setIsLogoutModal(true)}></Button>
             </>}>
             <div className={styles.mainContainer}>
                 <div className={styles.headerCard}>
@@ -71,6 +74,12 @@ export default function LogBook() {
                     </div>
                 </div>
             </div>
+
+            <LogoutModal
+            isOpen= {isLogoutModal}
+            onClose= {()=>{setIsLogoutModal(false)}}
+            onConfirm = {()=> alert("Cerradon sesion....")}
+            />
 
         </Structure>
     )
