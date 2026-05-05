@@ -1,0 +1,59 @@
+.mainContainer{
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.formCard{
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 1500px;
+    overflow: hidden;
+}
+
+.formBody{
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.gridRow4{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.gridRow3{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1.5rem;
+}
+
+.gridRow2{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1.5rem;
+}
+
+.gridRow1 {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.actionsContainer {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 1rem; 
+    margin-top: 1rem; 
+    padding-top: 4rem; 
+    padding:  0 0.5rem 0.5rem 0.5rem; 
+}
