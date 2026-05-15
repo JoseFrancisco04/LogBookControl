@@ -20,7 +20,8 @@ export default ({ laboratoryNumber, classInProgress, onClick }: Props) => {
                         </div>
                         <div className="media-content">
                             <p className="title is-4 has-text-black">Laboratorio {laboratoryNumber}</p>
-                            <p className="subtitle is-6 has-text-grey-darker">Clase en curso: {classInProgress}</p>
+                            <p className="subtitle is-6 has-text-grey-darker">Capacidad: {classInProgress} alumnos</p>
+                            {/* <p className="subtitle is-6 has-text-grey-darker">Clase en curso: {classInProgress}</p> */}
                         </div>
                     </div>
                 </div>

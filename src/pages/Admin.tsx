@@ -1,20 +1,14 @@
-// import { useNavigate } from "react-router-dom";
-// import Button from "../components/Button";
-// import Structure from "../components/Structure";
-// import CardSchedule from "../components/CardSchedule";
-// import type { ISchedule } from "../models/ISchedule";
-// import styles from "./LaboratorySchedule.module.css"
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ISchedule } from "../models/ISchedule";
 import Structure from "../components/Structure";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 import adminS from "./Admin.module.css"
+import { deleteClass, getScheduleFrom, saveScheduleData } from "../services/ScheduleService";
 // import { saveScheduleData } from "../services/ScheduleService";
 
-function getCareer(grupo_id: string): string {
+function getCareerColor(grupo_id: string): string {
     return grupo_id.includes("sis") ? "var(--color-sistemas)" :
         grupo_id.includes("inf") ? "var(--color-informatica)" :
             grupo_id.includes("ind") ? "var(--color-industrial)" :
@@ -24,15 +18,21 @@ function getCareer(grupo_id: string): string {
                             "var(--color-neutral-2";
 }
 
-// Clave única por celda, ej: "lunes-8:00"
 type CellKey = string;
 
 export default function Admin() {
     const navigate = useNavigate();
+    let sizeSchedules = 0;
+
+    useEffect(() => {
+        loadScheduleFrom("1");
+    }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCell, setSelectedCell] = useState<CellKey | null>(null);
     const [scheduleData, setScheduleData] = useState<Record<CellKey, ISchedule>>({});
+    const [loading, setLoading] = useState(false);
+    const [isSaved, setIsSaved] = useState(true);
 
     // Estado local del formulario
     const [formData, setFormData] = useState<ISchedule>({
@@ -44,12 +44,70 @@ export default function Admin() {
         grupo_id: "",
     });
 
-    // --- HANDLERS ---
+    const loadScheduleFrom = async (labNumber: string) => {
+        setLoading(true);
+        setIsSaved(true);
+        setScheduleData({});
+        const schedules = await getScheduleFrom(labNumber);
+
+        if (schedules) {
+            const newScheduleData: Record<string, any> = {};
+
+            schedules.forEach((s) => {
+                const horaInicio = s.hora_inicio.slice(0, -3);
+                const horaFin = s.hora_fin.slice(0, -3);
+                const cellKey = `${s.dia_semana}-${horaInicio}-${horaFin}`;
+                const classData = {
+                    materia: s.materia,
+                    dia_semana: s.dia_semana,
+                    hora_inicio: horaInicio,
+                    hora_fin: horaFin,
+                    maestro: s.maestro,
+                    grupo_id: s.grupo_id,
+                };
+                //console.log(cellKey, classData);
+                newScheduleData[cellKey] = classData;
+            });
+
+            setScheduleData((prev) => ({
+                ...prev,
+                ...newScheduleData,
+            }));
+            sizeSchedules = Object.keys(scheduleData).length;
+            setLoading(false);
+        }
+    };
+
+    function parseData(): ISchedule[] {
+        let schedulesForSave: ISchedule[] = [];
+
+        Object.keys(scheduleData).forEach((sd, index) => {
+            schedulesForSave.push(scheduleData[sd]);
+            const dataTemp = sd.split("-");
+            schedulesForSave[index].dia_semana = dataTemp[0];
+            schedulesForSave[index].hora_inicio = dataTemp[1].concat(":00");
+            schedulesForSave[index].hora_fin = dataTemp[2].concat(":00");
+            schedulesForSave[index].fase = 1;
+            const select = document.getElementById("sLaboratoryNumber") as HTMLSelectElement;
+            schedulesForSave[index].laboratorio = parseInt(select.value);
+        });
+
+        return schedulesForSave;
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        console.log(sizeSchedules, Object.keys(scheduleData).length)
+        if(sizeSchedules == Object.keys(scheduleData).length)
+            setIsSaved(true);
+    };
+
 
     // Al hacer click en una celda
     const handleCellClick = (cellKey: CellKey) => {
         setSelectedCell(cellKey);         // recuerda cuál celda
         setIsModalOpen(true);             // abre el modal
+        setIsSaved(false);
 
         // Si ya había datos en esa celda, los precarga en el form
         if (scheduleData[cellKey]) {
@@ -77,20 +135,44 @@ export default function Admin() {
         }));
 
         setIsModalOpen(false); // cierra el modal
+        setIsSaved(false); // Hay cambios sin guardar
     };
 
-    const saveSchedule = () => {
+    const handleDelete = () => {
+        if (!selectedCell) return;
 
-        console.log(Object.keys(scheduleData));
+        const dataCell = scheduleData[selectedCell];
+        let dataToSentd = parseData().filter(c => c.dia_semana == dataCell.dia_semana).find(c => c.hora_inicio == dataCell.hora_inicio);
+        deleteClass(dataToSentd).then((res) => {
+            console.log("handleDelete", res.data)
+        });
+
+        setIsModalOpen(false);
+
+        delete scheduleData[selectedCell];
+        setScheduleData(scheduleData);
+
+        setIsSaved(true);
+    }
+
+    const saveSchedule = () => {
+        saveScheduleData(parseData()).then(() => {
+            setIsSaved(true);
+            sizeSchedules = Object.keys(scheduleData).length;
+        });
     }
 
     // DATOS DE EJEMPLO 
-    const hours = ["7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
-    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado"];
+    const hours = ["07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00",
+        "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"];
+    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     return (
         <Structure title='DEFINIR HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Administrador`}
             navbarActions={<>
+                <Button texto="Maestros" variante="inverso" icono="fa-regular fa-chalkboard-user" onclick={() => {
+                    navigate("/teachers")
+                }}></Button>
                 <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
                     localStorage.setItem('isLoggedIn', 'false');
                     navigate("/login")
@@ -128,8 +210,11 @@ export default function Admin() {
                                     <label className="label has-text-centered" style={{ color: "var(--color-fuente)" }}>Laboratorio</label>
                                     <div className="control has-icons-left is-expanded">
                                         <span className="select is-mobile">
-                                            <select className="has-text-black" style={{ backgroundColor: "var(--color-fondo)" }}>
-                                                <option value="0">Selecciona una opción</option>
+                                            <select
+                                                id="sLaboratoryNumber"
+                                                className="has-text-black"
+                                                style={{ backgroundColor: "var(--color-fondo)" }}
+                                                onChange={(e) => loadScheduleFrom(e.target.value)}>
                                                 <option value="1">Laboratorio 1</option>
                                                 <option value="2">Laboratorio 2</option>
                                                 <option value="3">Laboratorio 3</option>
@@ -137,7 +222,7 @@ export default function Admin() {
                                             </select>
                                         </span>
                                         <span className="icon is-small is-left">
-                                            <i className="fas fa-computer has-text-black"></i>
+                                            <i className={`${loading ? 'fa-solid fa-spinner fa-spin-pulse' : 'fas fa-computer'} has-text-black`}></i>
                                         </span>
                                     </div>
                                 </div>
@@ -153,7 +238,11 @@ export default function Admin() {
                                 <tr>
                                     <th className="has-text-centered" style={{ color: "var(--color-fuente)" }}>Hora</th>
                                     {days.map((day) => (
-                                        <th className="has-text-centered" key={day} style={{ color: "var(--color-fuente)" }}>{day}</th>
+                                        <th className="has-text-centered"
+                                            key={day} style={{ color: "var(--color-fuente)" }}
+                                            colSpan={day == "Sabado" ? 2 : 1}>
+                                            {day}
+                                        </th>
                                     ))}
                                 </tr>
                             </thead>
@@ -164,18 +253,17 @@ export default function Admin() {
                                         {days.map((day) => {
                                             const cellKey = `${day}-${hour}`;        // clave única
                                             const cellInfo = scheduleData[cellKey];  // busca si hay datos
-
                                             return (
                                                 <td
                                                     key={cellKey}
                                                     onClick={() => handleCellClick(cellKey)}
                                                     style={{
                                                         cursor: "pointer", minWidth: "120px",
-                                                        backgroundColor: cellInfo ? getCareer(cellInfo.grupo_id.toLocaleLowerCase()) : ""
+                                                        backgroundColor: cellInfo ? getCareerColor(cellInfo.grupo_id.toLocaleLowerCase()) : ""
                                                     }}
                                                     className={cellInfo ? `has-text-black ${adminS.cellInfoVisible}` : "has-text-centered"}
                                                 >
-                                                    {/* Falta agregar el color por carrera */}
+                                                    {/* Falta agregar el color por carrera - IA quedó*/}
                                                     {cellInfo ? (
                                                         <div>
                                                             <small><b>{cellInfo.materia}</b></small>
@@ -200,7 +288,7 @@ export default function Admin() {
                         {/* ====== MODAL DE BULMA ====== */}
                         {/* La clase "is-active" es lo que lo hace visible en Bulma */}
                         <div className={`modal ${isModalOpen ? "is-active" : ""}`}>
-                            <div className="modal-background" onClick={() => setIsModalOpen(false)} />
+                            <div className="modal-background" onClick={closeModal} />
                             <div className="modal-card">
                                 <header className="modal-card-head" style={{ backgroundColor: "var(--color-primario)" }}>
                                     <span className={`icon is-medium mr-5 ${adminS.iconHead}`}>
@@ -211,144 +299,58 @@ export default function Admin() {
                                     </p>
                                     <button
                                         className="delete is-large"
-                                        onClick={() => setIsModalOpen(false)}
+                                        onClick={closeModal}
                                     />
                                 </header>
 
                                 <section className="modal-card-body" style={{ backgroundColor: "var(--color-fondo)", borderBlockEnd: "2px solid var(--color-neutral-2)" }}>
-                                    {/* Formulario */}
-                                    {/* <div className="field">
-                                        <label className="label" style={{ color: "var(--color-fuente)" }}>Carrera</label>
-                                        <div className="control has-icons-left is-expanded">
-                                            <span className="select is-fullwidth">
-                                                <select className="has-text-black" style={{ backgroundColor: "var(--color-fondo)" }}>
-                                                    <option>Selecciona una opción</option>
-                                                    <option>Sistemas Computacionales</option>
-                                                    <option>Industrial</option>
-                                                    <option>Informatica</option>
-                                                </select>
-                                            </span>
-                                            <span className="icon is-small is-left">
-                                                <i className="fas fa-graduation-cap has-text-black"></i>
-                                            </span>
-                                        </div>
-                                    </div>
- */}
 
                                     <InputField
                                         label={"Materia"}
                                         placeholder={"Ej: Cálculo diferencial"}
                                         type={"text"} icon={"fas fa-book"}
-                                        value={formData.materia}
+                                        value={formData.materia.toUpperCase()}
                                         onChange={(e) => setFormData({ ...formData, materia: e.target.value })}
                                     />
-                                    {/*
-                                    <div className="field">
-                                         <label className="label has-text-black">Materia</label>
-                                        <div className="control">
-                                            <input
-                                                className="input "
-                                                type="text"
-                                                value={formData.materia}
-                                                onChange={(e) => setFormData({ ...formData, materia: e.target.value })}
-                                                placeholder="Ej: Cálculo diferencial"
-                                            />
-                                        </div> 
-                                    </div>
-                                        */}
 
                                     <InputField
                                         label={"Docente"}
                                         placeholder={"Ej: Ing. Jesus"}
                                         type={"text"} icon={"fas fa-user"}
-                                        value={formData.maestro}
+                                        value={formData.maestro.toUpperCase()}
                                         onChange={(e) => setFormData({ ...formData, maestro: e.target.value })}
                                     />
-                                    {/* 
-                                    <div className="field">
-                                        <label className="label">Docente</label>
-                                        <div className="control">
-                                            <input
-                                                className="input"
-                                                type="text"
-                                                value={formData.maestro}
-                                                onChange={(e) => setFormData({ ...formData, maestro: e.target.value })}
-                                                placeholder="Ej: Dr. García"
-                                            />
-                                        </div> 
-                                    </div>
-                                        */}
 
                                     <InputField
                                         label={"Grupo"}
                                         placeholder={"Ej: G1MSIS08"}
                                         type={"text"} icon={"fas fa-users"}
-                                        value={formData.grupo_id}
+                                        value={formData.grupo_id.toUpperCase()}
                                         onChange={(e) => setFormData({ ...formData, grupo_id: e.target.value })}
                                     />
-                                    {/*
-                                    <div className="field">
-                                         <label className="label">Grupo</label>
-                                        <div className="control">
-                                            <input
-                                                className="input"
-                                                type="text"
-                                                value={formData.grupo_id}
-                                                onChange={(e) => setFormData({ ...formData, grupo_id: e.target.value })}
-                                                placeholder="Ej: 3A"
-                                            />
-                                        </div> 
-                                    </div>
-                                        */}
+
                                 </section>
 
                                 <footer className="modal-card-foot" style={{ backgroundColor: "var(--color-fondo)" }}>
                                     <div className="field is-grouped">
-
-                                        <p className="control">
-                                            <button className={`button ${adminS.buttonHover}`} style={{ backgroundColor: "var(--color-secundario)", border: "0px" }} onClick={handleSubmit}>
-                                                <span className="icon is-small">
-                                                    <i className="fas fa-save"></i>
-                                                </span>
-                                                <span>Guardar</span>
-                                            </button>
-                                        </p>
-
-                                        <p className="control">
-                                            <button className={`button is-danger is-outlined ${adminS.buttonHover}`} onClick={() => setIsModalOpen(false)}>
-                                                <span className="icon is-small">
-                                                    <i className="fas fa-times"></i>
-                                                </span>
-                                                <span>Cancelar</span>
-                                            </button>
-                                        </p>
+                                        <Button texto={"Guardar"} iconIzquierdo="fas fa-save" onclick={handleSubmit} />
+                                        <Button texto={"Cancelar"} iconIzquierdo="fas fa-times" variante="secundario" onclick={closeModal} />
+                                        {formData.grupo_id && isSaved ?
+                                            <Button texto={"Eliminare"} iconIzquierdo="fas fa-trash" variante="secundario" onclick={handleDelete} />
+                                            : <></>
+                                        }
 
                                     </div>
                                 </footer>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="buttons">
-                        <button className={`button ${adminS.buttonHover}`} style={{ backgroundColor: "var(--color-secundario)", border: "0px" }}
-                            onClick={saveSchedule}>
-                            <span className="icon">
-                                <i className="fas fa-save"></i>
-                            </span>
-                            <span>Guardarr</span>
-                        </button>
+                        <Button texto={`${isSaved ? "Guardado" : "Guardar"}`} iconIzquierdo={`${isSaved ? 'fa-regular fa-square-check' : 'fas fa-save'}`} onclick={saveSchedule} />
 
-                        <button className={`button is-danger is-outlined ${adminS.buttonHover}`}>
-                            <span className="icon">
-                                <i className="fas fa-times"></i>
-                            </span>
-                            <span>Cancelar</span>
-                        </button>
                     </div>
 
                 </div>
-            </section >
+            </section>
         </Structure >
-
     );
 }
