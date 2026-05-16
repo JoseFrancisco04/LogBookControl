@@ -9,7 +9,7 @@ interface InputFieldProps {
     iconRight?: string
 
     value?: string
-    onChange?: (e: any) => void
+    onChange?: (value: string) => void
 }
 
 export default function InputField({ label, placeholder, type, icon, iconRight, value, onChange }: InputFieldProps) {
@@ -28,7 +28,7 @@ export default function InputField({ label, placeholder, type, icon, iconRight, 
             <label className={`label ${Styles.label}`}>{label}</label>
             <div className={`control has-icons-left ${iconRight ? 'has-icons-right' : ''}`}>
                 <input className={`input ${Styles.input}`} type={inputType} placeholder={placeholder}
-                    value={value} onChange={onChange}
+                    value={value} onChange={(e)=> onChange && onChange(e.target.value)}
                 />
                 <span className={`icon is-left ${Styles.iconLeft}`}>
                     <i className={`fas ${icon}`}></i>

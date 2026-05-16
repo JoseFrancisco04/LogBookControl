@@ -6,6 +6,7 @@
     height: 100vh;
     background-color: rgba(15,42,61,0.4);
     backdrop-filter: blur(4px);
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -38,7 +39,7 @@
 }
 
 .titleIcon{
-    color: #EF4444;
+    color: var(--color-secundario);
     font-size: 1.5rem;
 }
 
@@ -59,8 +60,7 @@
 .modalBody{
     background-color: var(--color-neutral-1);
     padding: 1.5rem 2rem;
-    border-top:1px solid var(--color-neutral-2);
-    border-bottom: 1px solid var(--color-neutral-2);
+
 }
 
 .modalFooter{
@@ -70,4 +70,14 @@
     gap: 1rem;
     background-color: var(--color-fondo);
 
+}
+
+.error{
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10PX;
+    border-radius: 5PX;
+    margin-bottom: 15PX;
+    text-align: center;
+    font-weight: bold;
 }

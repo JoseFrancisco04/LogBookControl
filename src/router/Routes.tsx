@@ -7,22 +7,32 @@ import LogBook from "../pages/LogBook";
 import { ErrorPage } from "../pages/ErrorPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import Admin from "../pages/Admin";
+import FormLogBook from "../pages/FormLogBook";
+import { PublicRoute } from "../components/PublicRoute";
+import { Children } from "react";
 
 export const router = createBrowserRouter([
     {
-        path: '/',
-        element: <MapLaboratory />,
-        errorElement: <ErrorPage />,
+        element: <PublicRoute />,
+        children: [
+            {
+                path: '/',
+                element: <MapLaboratory />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: '/login',
+                element: <Login />
+            },
+
+        ]
     },
     {
         path: '/horario/:labNumber',
         element: <LaboratorySchedule />,
         errorElement: <ErrorPage />
     },
-    {
-        path: '/login',
-        element: <Login />
-    },
+
     {
         // Envolvemos esta sección con nuestro guardia
         element: <ProtectedRoute />,
@@ -34,6 +44,10 @@ export const router = createBrowserRouter([
             {
                 path: '/bitacora',
                 element: <LogBook />
+            },
+            {
+                path: '/bitacora/FormLogBook',
+                element: <FormLogBook />
             }
             // Si mañana agregas más pantallas para el admin, las pones aquí:
             // { path: '/admin/configuracion', element: <Configuracion /> }
