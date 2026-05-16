@@ -60,6 +60,7 @@
 .modalBody{
     background-color: var(--color-neutral-1);
     padding: 1.5rem 2rem;
+    
 }
 
 .summaryContainer{
@@ -113,4 +114,14 @@
     justify-content: flex-end;
     gap: 1rem;
     background-color: var(--color-fondo);
+}
+
+.error{
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10PX;
+    border-radius: 5PX;
+    margin-bottom: 15PX;
+    text-align: center;
+    font-weight: bold;
 }

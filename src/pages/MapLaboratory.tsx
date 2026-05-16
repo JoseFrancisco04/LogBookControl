@@ -1,7 +1,7 @@
 import Structure from "../components/Structure";
 import Button from "../components/Button"
 import styles from "./Login.module.css";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import CardMap from "../components/CardMap";
 import type { ILaboratoryData } from "../models/ILaboratoryData";
 import { getScheduleFrom } from "../services/ScheduleService";
@@ -55,7 +55,7 @@ export default function MapLaboratory() {
     return (
         <Structure title='HORARIOS' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Horarios'
             navbarActions={<>
-                <Button texto="Log In" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => navigate("/login")}></Button>
+                <Button texto="Iniciar Sesión" variante="inverso" iconIzquierdo="fal fa-sign-in-alt" onclick={() => navigate("/login")}></Button>
             </>}>
             <section className={`section ${styles.section}`}>
                 {navigating ?

@@ -6,21 +6,42 @@ interface SearchableInputProps{
     placeholder: string;
     icon:string;
     options: string[];
+    value: string;
+    onChange: (value:string) => void;
 }
 
-export default function SearchableInput({label, placeholder, icon, options}: SearchableInputProps){
-    const [searchTerm, setSearchTerm] = useState('');
+export default function SearchableInput({label, placeholder, icon, options,value, onChange}: SearchableInputProps){
     const [isOpen, setIsOpen]= useState(false);
 
     const filteredOptions = options.filter(option =>
-        option.toLowerCase().includes(searchTerm.toLowerCase())
+        option.toLowerCase().includes(value.toLowerCase())
 
     );
 
     const handleSelect = (option: string) =>{
-        setSearchTerm(option);
+        onChange(option);
         setIsOpen(false);
     };
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setIsOpen(false);
+
+            if(value !== ""){
+                const coincidenciaExacta = options.find(
+                    opt => opt.toLowerCase() == value.toLowerCase()
+
+                );
+
+                if(coincidenciaExacta){
+                    onChange(coincidenciaExacta);
+
+                }else{
+                    onChange("");
+                }
+            }
+        }, 200);
+    }
 
     return(
         <div className={styles.field}>
@@ -30,13 +51,13 @@ export default function SearchableInput({label, placeholder, icon, options}: Sea
                 type="text"
                 className={styles.input}
                 placeholder={placeholder} 
-                value={searchTerm}
+                value={value}
                 onChange={(e)=>{
-                    setSearchTerm(e.target.value);
+                    onChange(e.target.value);
                     setIsOpen(true);
                 }}
                 onFocus={()=> setIsOpen(true)}
-                onBlur={()=> setTimeout(() => setIsOpen(false), 200)}
+                onBlur={handleBlur}
                 />
                 <span className={styles.iconLeft}>
                     <i className={`fas ${icon}`}></i>
@@ -47,7 +68,7 @@ export default function SearchableInput({label, placeholder, icon, options}: Sea
                 <ul className={styles.dropdown}>
                     {filteredOptions.length > 0 ? (
                         filteredOptions.map((option, index) =>(
-                            <li key={index} className={styles.dropdownItem} onClick={()=> handleSelect(option)}>
+                            <li key={index} className={styles.dropdownItem} onMouseDown={()=> handleSelect(option)}>
                                 {option}
                             </li>
                         ))

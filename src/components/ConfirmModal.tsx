@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import styles from "./ConfirmModal.module.css";
 import Button from "./Button";
 import InputField from "./InputField";
@@ -6,7 +6,8 @@ import InputField from "./InputField";
 interface ConfirmModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm: (firma: string) => void;
+    isLoading?: boolean;
 
     datosResumen: {
         docente: string;
@@ -15,8 +16,30 @@ interface ConfirmModalProps {
     };
 }
 
-export default function ConfirmModal({ isOpen, onClose, onConfirm, datosResumen }: ConfirmModalProps) {
+export default function ConfirmModal({ isOpen, onClose, onConfirm, datosResumen, isLoading }: ConfirmModalProps) {
+    const [firma, setFirma] = useState("");
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(()=>{
+        if(!isOpen){
+            setError("");
+            setFirma("");
+        }
+    },[isOpen])
+
     if (!isOpen) return null;
+
+    const handleConfirmClick = ()=>{
+        if(isLoading) return;
+
+        if(!firma.trim()){
+            setError("Por favor ingrese la clave de asistencia para confirmar. ");
+            return;
+        }
+
+        onConfirm(firma);
+    }
+
     return (
         <div className={styles.overlay}>
             <div className={styles.modalCard}>
@@ -29,6 +52,11 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, datosResumen 
                         Revise los detalles de la sesión antes de confirmar la asistencia y finalizar el registro.
                     </p>
                 </div>
+                {error &&(
+                    <div className={styles.error}>
+                        {error}
+                    </div>
+                )}
                 <div className={styles.modalBody}>
                     <div className={styles.summaryContainer}>
                         <div className={styles.summaryRow}>
@@ -44,15 +72,14 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, datosResumen 
                             <span className={styles.summaryValue}>{datosResumen.laboratorio || 'No especificado'}</span>
                         </div>
                     </div>
-                    <InputField label="Clave de asistencia" placeholder="Ingrese la clave" type="password" icon="fa-key" />
+                    <InputField label="Clave de asistencia" placeholder="Ingrese la clave" type="password" icon="fa-key" value={firma} iconRight='fa-eye' onChange={(val)=> setFirma(val)}/>
                     <span className={styles.helperText}>
                         <i className={`fas fa-info-circle`}></i>Requerido para validar la sesión.
                     </span>
                 </div>
                 <div className={styles.modalFooter}>
                     <Button texto="Cancelar" variante="secundario" onclick={onClose}/>
-                    <Button texto="Confirmar Asistencia" variante="primario" icono="fa-check-circle" onclick={onConfirm}/>
-
+                    <Button texto={isLoading ? "Confirmando...":"Confirmar Asistencia"} variante="primario" icono={isLoading ?"fa-spinner fa-spin":"fa-check-circle"} onclick={handleConfirmClick}/>
                 </div>
             </div>
 

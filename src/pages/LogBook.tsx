@@ -1,21 +1,56 @@
-import Button from "../components/Button"
-import Structure from "../components/Structure"
-import styles from "./LogBook.module.css"
-import logoTec from "../assets/logoTec.png"
-import { useState } from "react"
-import LogoutModal from "../components/LogoutModal"
+import Button from "../components/Button";
+import Structure from "../components/Structure";
+import styles from "./LogBook.module.css";
+//import logoTec from "../assets/logoTec.png";
+import { useEffect, useState } from "react";
+import LogoutModal from "../components/LogoutModal";
+import { useNavigate } from "react-router-dom";
+import { getLogBookForDate } from "../services/LogBookService";
+import type { LogBookRecord } from "../services/LogBookService";
 
 
 export default function LogBook() {
-    const[isLogoutModal, setIsLogoutModal] = useState(false);
+    const [isLogoutModal, setIsLogoutModal] = useState(false);
+    const navigate = useNavigate();
+
+    const [registros, setRegistros] = useState<LogBookRecord[]>([]);
+    const [charging, setCharging] = useState<boolean>(true);
+
+    const getDate = () => {
+        const hoy = new Date();
+        const year = hoy.getFullYear();
+        const month = String(hoy.getMonth() + 1).padStart(2, '0');
+        const day = String(hoy.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    useEffect(() => {
+        const cargarHistorial = async () => {
+            try {
+                setCharging(true);
+                const fechaHoy = getDate();
+                const data = await getLogBookForDate(fechaHoy);
+                setRegistros(data);
+
+            } catch (error) {
+                console.error("Error al cargar la bitácora", error);
+
+            } finally {
+                setCharging(false);
+            }
+        };
+        cargarHistorial();
+    }, []);
+
     return (
         <Structure title='BITÁCORA' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Computo | Bitácora'
             navbarActions={<>
-                <Button texto="Imprimir Bítacora" variante="inverso" icono="fas fa-print"></Button>
-                <Button texto="Cerrar Sesión" variante="inverso" iconIzquierdo="fa-sign-out-alt" onclick={()=> setIsLogoutModal(true)}></Button>
+                {/*<Button texto="Imprimir Bítacora" variante="inverso" icono="fas fa-print"></Button>*/}
+                <Button texto="Cerrar Sesión" variante="inverso" iconIzquierdo="fa-sign-out-alt" onclick={() => setIsLogoutModal(true)}></Button>
             </>}>
             <div className={styles.mainContainer}>
-                <div className={styles.headerCard}>
+
+                {/* <div className={styles.headerCard}>
                     <img src={logoTec} alt="Logo TEC" className={styles.logo} />
                     <div className={styles.headerCenter}>
                         <h1 className={styles.title}>
@@ -33,7 +68,7 @@ export default function LogBook() {
                         <p><strong className={styles.subtitle}>Página:</strong> 1 de 1</p>
 
                     </div>
-                </div>
+                </div>*/}
 
                 <div className={styles.sectionTitleContainer}>
                     <div className={styles.titleGroup}>
@@ -41,7 +76,7 @@ export default function LogBook() {
                         <span className={styles.mainHadding}>Registro de Actividad</span>
                     </div>
                     <div>
-                        <Button texto="Agregar Asistencia" icono="fas fa-plus" variante="primario" onclick={()=> alert('Aqui se tiene que abrir el formulario')}></Button>
+                        <Button texto="Agregar Asistencia" icono="fas fa-plus" variante="primario" onclick={() => navigate("/bitacora/FormLogBook")}></Button>
                     </div>
                 </div>
 
@@ -52,7 +87,8 @@ export default function LogBook() {
                                 <tr>
                                     <th>Fecha</th>
                                     <th>Nombre del Docente</th>
-                                    <th>Materia/Carrera</th>
+                                    <th>Materia</th>
+                                    <th>Carrera</th>
                                     <th>Práctica a Realizar</th>
                                     <th>Unidad</th>
                                     <th>¿Registrada en ID?</th>
@@ -63,12 +99,37 @@ export default function LogBook() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colSpan={10} className={styles.emptyStates}>
-                                        <i className="fas fa-clipboard-list"></i>
-                                        <p>No hay registros de asistencia para el día de hoy</p>
-                                    </td>
-                                </tr>
+                                {charging ? (
+                                    <tr>
+                                        <td colSpan={11} style={{ textAlign: 'center', padding: '3rem' }}>
+                                            <i className="fas fa-spinner fa-spin" style={{ fontSize: '2rem', color: 'var(--color-primario)' }}></i>
+                                            <p style={{ marginTop: '1rem', color: 'var(--color-neutral-3)' }}>Cargando registros...</p>
+                                        </td>
+                                    </tr>
+                                ) : registros.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={11} className={styles.emptyStates}>
+                                            <i className="fas fa-clipboard-list"></i>
+                                            <p>No hay registros de asistencia para el día de hoy</p>
+                                        </td>
+                                    </tr>
+                                ): (
+                                    registros.map((registro) =>(
+                                        <tr key={registro.id}>
+                                            <td>{registro.fecha}</td>
+                                            <td>{registro.nombre_docente}</td>
+                                            <td>{registro.materia}</td>
+                                            <td>{registro.carrera || 'N/A'}</td>
+                                            <td>{registro.practica_nombre}</td>
+                                            <td>{registro.unidad}</td>
+                                            <td>{registro.registrada ? 'Si':'No'}</td>
+                                            <td>{registro.alumnos_atendidos}</td>
+                                            <td>{registro.hora_entrada}</td>
+                                            <td>{registro.hora_salida}</td>
+                                            <td>{registro.laboratorio}</td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -76,9 +137,8 @@ export default function LogBook() {
             </div>
 
             <LogoutModal
-            isOpen= {isLogoutModal}
-            onClose= {()=>{setIsLogoutModal(false)}}
-            onConfirm = {()=> alert("Cerradon sesion....")}
+                isOpen={isLogoutModal}
+                onClose={() => { setIsLogoutModal(false) }}
             />
 
         </Structure>
