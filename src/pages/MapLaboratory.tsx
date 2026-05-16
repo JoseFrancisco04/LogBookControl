@@ -10,17 +10,14 @@ import { useState } from "react";
 
 export default function MapLaboratory() {
     const [navigating, setNavigating] = useState(false);
-    // const [loading, setLoading] = useState(true);
-    // const [schedules, setSchedules] = useState<ISchedule[]>([]);
 
     // Objeto encargado de la navegación
     const navigate = useNavigate();
     
-    // Navegar y enviar datos a un destino, en este caso ScheduleL...
-    const viewHorary = (labNumber: number) => {
+    const viewHorary = (labNumber: string) => {
         console.log("Navegando al lab " + labNumber);
         setNavigating(true);
-        getScheduleFrom(labNumber.toString()).then((data) => {
+        getScheduleFrom(labNumber).then((data) => {
 
             // Enviamos solo los horarios de hoy del laboratorio selecionado
             const today = new Date().toLocaleDateString('es-ES', { weekday: 'long' });
@@ -29,28 +26,13 @@ export default function MapLaboratory() {
             const laboratoryData: ILaboratoryData = {
                 schedules: data
             };
+            console.log(data);
 
             navigate(`/horario/${labNumber}`, { state: laboratoryData });
         }).catch(() => {
             setNavigating(false);
         });
     }
-
-    // const loadSchedules = async () => {
-    //     setLoading(true);
-    //     const schedulesLab1 = await getScheduleFrom("1") as ISchedule[];
-    //     const schedulesLab2 = await getScheduleFrom("2") as ISchedule[];
-    //     const schedulesLab3 = await getScheduleFrom("3") as ISchedule[];
-    //     const schedulesLab4 = await getScheduleFrom("4") as ISchedule[];
-    //     if (!schedulesLab1 && !schedulesLab2 && !schedulesLab3) {
-    //         setSchedules(prev => prev.concat(schedulesLab1, schedulesLab2, schedulesLab3, schedulesLab4));
-    //         setLoading(false);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     loadSchedules();
-    // }, []);
 
     return (
         <Structure title='HORARIOS' footerText='© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Horarios'
@@ -64,13 +46,13 @@ export default function MapLaboratory() {
                     ) : (
                         <div className={`container`}>
                             <div className='columns is-centered is-mobile'>
-                                <CardMap laboratoryNumber="1" classInProgress="" onClick={() => viewHorary(1)} />
-                                <CardMap laboratoryNumber="2" classInProgress="" onClick={() => viewHorary(2)} />
+                                <CardMap laboratoryNumber="1" classInProgress="32" onClick={() => viewHorary("1")} />
+                                <CardMap laboratoryNumber="2" classInProgress="25" onClick={() => viewHorary("2")} />
                             </div>
 
                             <div className='columns is-centered is-mobile'>
-                                <CardMap laboratoryNumber="3" classInProgress="" onClick={() => viewHorary(3)} />
-                                <CardMap laboratoryNumber="4" classInProgress="" onClick={() => viewHorary(4)} />
+                                <CardMap laboratoryNumber="3" classInProgress="25" onClick={() => viewHorary("3")} />
+                                <CardMap laboratoryNumber="4" classInProgress="30" onClick={() => viewHorary("4")} />
                             </div>
                         </div>
                     )}

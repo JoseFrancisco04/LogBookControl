@@ -17,7 +17,7 @@ export const LaboratorySchedule = () => {
     const labData = location.state as ILaboratoryData;
 
     // En algunos casos el if no entra y la pantalla marca error
-    if (!labData || !labData.schedules || parseInt(labNumber!) > 4) {
+    if (!labData || !labData.schedules || labData.schedules.length < 1 || parseInt(labNumber!) > 4) {
         return <Navigate to="/" replace />;
     }
 
@@ -25,18 +25,19 @@ export const LaboratorySchedule = () => {
     let now = new Date();
     // Obtenemos la hora actual en formato 00:00:00
     const timeNow = getHours(now);
-    console.log(timeNow);
+    //console.log(timeNow);
 
     // Sumamos una hora (siguiente clase)
     now.setHours(now.getHours() + 1);
     // Obtenemos la siguiente hora en formato 00:00:00
     const timeNext = getHours(now);
-    console.log(timeNext);
+    //console.log(timeNext);
 
-    //const classInProgress = labData.schedules.find(s => s.hora_inicio == timeNow);
-    const classInProgress = labData.schedules.find(s => s.hora_inicio == "07:00:00");
+    const classInProgress = labData.schedules.find(s => s.hora_inicio == timeNow);
+    //const classInProgress = labData.schedules.find(s => s.hora_inicio == "07:00:00");
     const nextClass = labData.schedules.find(s => s.hora_inicio == timeNext);
     //const nextClass = labData.schedules.find(s => s.hora_inicio == "08:00:00");
+
 
     return (
         <Structure title='HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Laboratorio ${labNumber}`}
@@ -58,10 +59,16 @@ export const LaboratorySchedule = () => {
                                         {/* Clase Actual */}
                                         <div className={`column`}>
                                             {/* Agregar el if para cuando no hayan clases */}
-                                            <p className={`heading has-text-weight-bold ${styles.title}`}>En Curso ({`${classInProgress?.hora_inicio.slice(0,-3)} - ${classInProgress?.hora_fin.slice(0,-3)}`})</p>
-                                            <p className={`title is-4 mb-2 ${styles.title}`}>{classInProgress?.materia}</p>
-                                            <p className={`subtitle is-6 mb-0 ${styles.title}`}>{classInProgress?.maestro}</p>
-                                            <span className={`tag is-info is-light mt-2 ${styles.title}`}>{classInProgress?.grupo_id}</span>
+                                            {classInProgress ? <>
+                                                <p className={`heading has-text-weight-bold ${styles.title}`}>En Curso ({`${classInProgress?.hora_inicio.slice(0, -3)} - ${classInProgress?.hora_fin.slice(0, -3)}`})</p>
+                                                <p className={`title is-4 mb-2 ${styles.title}`}>{classInProgress?.materia}</p>
+                                                <p className={`subtitle is-6 mb-0 ${styles.title}`}>{classInProgress?.maestro}</p>
+                                                <span className={`tag is-info is-light mt-2 ${styles.title}`}>{classInProgress?.grupo_id}</span>
+                                            </> : <>
+                                                <p className={`heading has-text-weight-bold ${styles.title}`}>Ninguna clase en curso</p>
+                                                <p className={`title is-4 mb-2 ${styles.title}`}>Laboratorio libre</p>
+                                            </>}
+
                                         </div>
 
                                         {/* Clase siguiente */}
@@ -69,10 +76,10 @@ export const LaboratorySchedule = () => {
                                             <p className={`heading`} style={{ color: "var(--color-fuente)" }}>Siguiente</p>
                                             <p className={`subtitle is-6 mb-1`} style={{ color: "var(--color-fuente)" }}>{nextClass?.materia}</p>
                                             <p className={`is-size-7`} style={{ color: "var(--color-fuente)" }}>{
-                                                nextClass? 
-                                                `${nextClass?.hora_inicio.slice(0,-3)} - ${nextClass?.hora_fin.slice(0,-3)}` :
-                                                "Sin clases a continuación"
-                                                }</p>
+                                                nextClass ?
+                                                    `${nextClass?.hora_inicio.slice(0, -3)} - ${nextClass?.hora_fin.slice(0, -3)}` :
+                                                    "Sin clases a continuación"
+                                            }</p>
                                         </div>
 
                                     </div>
@@ -80,7 +87,7 @@ export const LaboratorySchedule = () => {
                             </div>
 
 
-                            <h2 className={`title is-5 has-text-grey mb-4`}>Programación del Día</h2>
+                            <h2 className={`title is-5 has-text-grey mb-4`}>Programación del Día {labData?.schedules[0].dia_semana}</h2>
 
                             {labData?.schedules?.map((hour) => (
                                 <CardSchedule schedule={hour} />

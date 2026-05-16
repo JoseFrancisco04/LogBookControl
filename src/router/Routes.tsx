@@ -9,7 +9,8 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Admin from "../pages/Admin";
 import FormLogBook from "../pages/FormLogBook";
 import { PublicRoute } from "../components/PublicRoute";
-import { Children } from "react";
+import Teachers from "../pages/Teachers";
+import Statistics from "../pages/Statistics";
 
 export const router = createBrowserRouter([
     {
@@ -40,6 +41,14 @@ export const router = createBrowserRouter([
             {
                 path: '/admin',
                 element: <Admin />,
+            },
+            {
+                path: '/teachers',
+                element: <Teachers />,
+            },
+            {
+                path: '/statistics',
+                element: <Statistics />,
             },
             {
                 path: '/bitacora',
