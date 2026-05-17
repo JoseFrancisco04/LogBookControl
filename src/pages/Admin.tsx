@@ -22,7 +22,6 @@ type CellKey = string;
 
 export default function Admin() {
     const navigate = useNavigate();
-    let sizeSchedules = 0;
 
     useEffect(() => {
         loadScheduleFrom("1");
@@ -73,7 +72,6 @@ export default function Admin() {
                 ...prev,
                 ...newScheduleData,
             }));
-            sizeSchedules = Object.keys(scheduleData).length;
             setLoading(false);
         }
     };
@@ -95,11 +93,24 @@ export default function Admin() {
         return schedulesForSave;
     }
 
+    const modalIsEmpty = (): boolean => {
+        return formData.materia.trim() == "" &&
+            formData.maestro.trim() == "" &&
+            formData.grupo_id.trim() == "" ?
+            true : false;
+    }
+
     const closeModal = () => {
+        setFormData({
+            materia: "",
+            dia_semana: "",
+            hora_inicio: "",
+            hora_fin: "",
+            maestro: "",
+            grupo_id: "",
+        });
         setIsModalOpen(false);
-        console.log(sizeSchedules, Object.keys(scheduleData).length)
-        if (sizeSchedules == Object.keys(scheduleData).length)
-            setIsSaved(true);
+        setIsSaved(true);
     };
 
 
@@ -128,11 +139,11 @@ export default function Admin() {
     const handleSubmit = () => {
         if (!selectedCell) return;
 
-        // Guarda los datos usando la celda como "llave"
-        setScheduleData((prev) => ({
-            ...prev,
-            [selectedCell]: formData,
-        }));
+        if (!modalIsEmpty())
+            setScheduleData((prev) => ({ // Guarda los datos usando la celda como "llave"
+                ...prev,
+                [selectedCell]: formData,
+            }));
 
         setIsModalOpen(false); // cierra el modal
         setIsSaved(false); // Hay cambios sin guardar
@@ -158,7 +169,6 @@ export default function Admin() {
     const saveSchedule = () => {
         saveScheduleData(parseData()).then(() => {
             setIsSaved(true);
-            sizeSchedules = Object.keys(scheduleData).length;
         });
     }
 
@@ -315,24 +325,24 @@ export default function Admin() {
                                         label={"Materia"}
                                         placeholder={"Ej: Cálculo diferencial"}
                                         type={"text"} icon={"fas fa-book"}
-                                        value={formData.materia.toUpperCase()}
-                                        onChange={setFormData({ ...formData, materia: e.target.value })}
+                                        value={formData.materia}
+                                        onChange={(e) => setFormData({ ...formData, materia: e.toUpperCase() })}
                                     />
 
                                     <InputField
                                         label={"Docente"}
                                         placeholder={"Ej: Ing. Jesus"}
                                         type={"text"} icon={"fas fa-user"}
-                                        value={formData.maestro.toUpperCase()}
-                                        onChange={(e) => setFormData({formData, maestro: e.target.value })}
+                                        value={formData.maestro}
+                                        onChange={(e) => setFormData({ ...formData, maestro: e.toUpperCase() })}
                                     />
 
                                     <InputField
                                         label={"Grupo"}
                                         placeholder={"Ej: G1MSIS08"}
                                         type={"text"} icon={"fas fa-users"}
-                                        value={formData.grupo_id.toUpperCase()}
-                                        onChange={(e) => setFormData({ ...formData, grupo_id: e.target.value })}
+                                        value={formData.grupo_id}
+                                        onChange={(e) => setFormData({ ...formData, grupo_id: e.toUpperCase() })}
                                     />
 
                                 </section>
@@ -342,7 +352,7 @@ export default function Admin() {
                                         <Button texto={"Guardar"} iconIzquierdo="fas fa-save" onclick={handleSubmit} />
                                         <Button texto={"Cancelar"} iconIzquierdo="fas fa-times" variante="secundario" onclick={closeModal} />
                                         {formData.grupo_id && isSaved ?
-                                            <Button texto={"Eliminare"} iconIzquierdo="fas fa-trash" variante="secundario" onclick={handleDelete} />
+                                            <Button texto={"Eliminar"} iconIzquierdo="fas fa-trash" variante="secundario" onclick={handleDelete} />
                                             : <></>
                                         }
 

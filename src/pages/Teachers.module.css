@@ -1,0 +1,9 @@
+.titleS{
+    color: var(--color-fuente);
+    font-size: var(--fuente-grande);
+}
+
+.subtitleS{
+    color: var(--color-fuente);
+    font-size: var(--fuente-titulo);
+}
