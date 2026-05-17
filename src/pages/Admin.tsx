@@ -98,7 +98,7 @@ export default function Admin() {
     const closeModal = () => {
         setIsModalOpen(false);
         console.log(sizeSchedules, Object.keys(scheduleData).length)
-        if(sizeSchedules == Object.keys(scheduleData).length)
+        if (sizeSchedules == Object.keys(scheduleData).length)
             setIsSaved(true);
     };
 
@@ -162,6 +162,15 @@ export default function Admin() {
         });
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('rol');
+        localStorage.removeItem('num_control');
+
+        navigate('/', { replace: true });
+
+    }
+
     // DATOS DE EJEMPLO 
     const hours = ["07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00",
         "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"];
@@ -173,10 +182,7 @@ export default function Admin() {
                 <Button texto="Maestros" variante="inverso" icono="fa-regular fa-chalkboard-user" onclick={() => {
                     navigate("/teachers")
                 }}></Button>
-                <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
-                    localStorage.setItem('isLoggedIn', 'false');
-                    navigate("/login")
-                }}></Button>
+                <Button texto="Cerrar Sesión" variante="inverso" icono="fal fa-sign-in-alt" onclick={handleLogout}></Button>
             </>}>
 
 
@@ -310,7 +316,7 @@ export default function Admin() {
                                         placeholder={"Ej: Cálculo diferencial"}
                                         type={"text"} icon={"fas fa-book"}
                                         value={formData.materia.toUpperCase()}
-                                        onChange={(e) => setFormData({ ...formData, materia: e.target.value })}
+                                        onChange={setFormData({ ...formData, materia: e.target.value })}
                                     />
 
                                     <InputField
@@ -318,7 +324,7 @@ export default function Admin() {
                                         placeholder={"Ej: Ing. Jesus"}
                                         type={"text"} icon={"fas fa-user"}
                                         value={formData.maestro.toUpperCase()}
-                                        onChange={(e) => setFormData({ ...formData, maestro: e.target.value })}
+                                        onChange={(e) => setFormData({formData, maestro: e.target.value })}
                                     />
 
                                     <InputField

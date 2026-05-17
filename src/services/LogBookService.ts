@@ -77,7 +77,7 @@ export const getLogBookForDate = async (fecha: string): Promise<LogBookRecord[]>
     try{
         const token = localStorage.getItem('token');
 
-        const response = await axios.get<LogBookRecord[]>(
+        const response = await axios.get<LogBookRecord[] | null>(
             `${API_URL}/api/bitacora/${fecha}`,
             {
                 headers:{
@@ -85,7 +85,7 @@ export const getLogBookForDate = async (fecha: string): Promise<LogBookRecord[]>
                 }
             }
         );
-        return response.data;
+        return response.data ?? [];
 
     }catch(error){
         if(axios.isAxiosError(error)){
