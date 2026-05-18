@@ -86,7 +86,10 @@ export default function Admin() {
                 <Button texto="Maestros" variante="inverso" icono="fa-regular fa-chalkboard-user" onclick={() => {
                     navigate("/teachers")
                 }}></Button>
-                <Button texto="Cerrar Sesión" variante="inverso" icono="fal fa-sign-in-alt" onclick={handleLogout}></Button>
+                <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
+                    localStorage.setItem('isLoggedIn', 'false');
+                    navigate("/login")
+                }}></Button>
             </>}>
 
 
