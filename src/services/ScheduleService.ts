@@ -1,65 +1,85 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import type { ISchedule } from "../models/ISchedule";
 
-const API_URL = "https://791q1zh4-3000.usw3.devtunnels.ms";
+// Modelo de como enviamos la info
+interface ISchedulePayload {
+    maestro_nombre: string;
+    materia: string;
+    dia_semana: string;
+    hora_inicio: string;
+    hora_fin: string;
+    fase: number;
+    laboratorio: number;
+    grupo_id: string;
+}
 
-function parseData(data: any) {
+// Instancia de axios, con parametros predefinidos
+const apiClient = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+    timeout: 5000, // Si el backend no responde en 5 segundos, se cancela todo
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+        // Atrapamos solo el error de cuando el servidor está apagado
+        if (error.code === 'ERR_NETWORK') {
+            console.warn("No se pudo conectar con el servidor.");
+        } else {
+            console.error(`Error en la API: ${error.response?.status}`, error.message);
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+function parseData(data: ISchedule): ISchedulePayload {
     return {
         "maestro_nombre": data.maestro.toUpperCase(),
         "materia": data.materia.toUpperCase(),
         "dia_semana": data.dia_semana,
         "hora_inicio": data.hora_inicio,
         "hora_fin": data.hora_fin,
-        "fase": data.fase,
-        "laboratorio": data.laboratorio,
+        "fase": data.fase!,
+        "laboratorio": data.laboratorio!,
         "grupo_id": data.grupo_id.toUpperCase(),
     };
-}
+};
 
-export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[] | undefined> => {
+export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> => {
     try {
-        const response = await axios.get(`${API_URL}/api/horarios/${labNumber}`);
+        const response = await apiClient.get<ISchedule[]>(`/api/horarios/${labNumber}`);
         return response.data;
     } catch (error) {
-        console.error(error);
+        return [];
     }
 }
 
 export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
-    const dataSend: any[] = [];
-    schedule.forEach(s => {
-        dataSend.push(parseData(s));
-    });
+    try {
+        const dataSend: ISchedulePayload[] = schedule.map(parseData);
 
-    //console.log("Enviando: \n", JSON.stringify(dataSend));
-
-    const response = await axios.post(
-        `${API_URL}/api/horarios/registrar_horario`,
-        JSON.stringify(dataSend),
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-    console.log(response.data);
-    return response.data;
+        const response = await apiClient.post(
+            `/api/horarios/registrar_horario`,
+            dataSend
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error("Error al guardar el horario");
+    }
 }
 
-export const deleteClass = async (dataToDelete: any) => {
-    //console.log("delete",parseData(dataToDelete))
+export const deleteSchedule = async (schedule: ISchedule) => {
+    const dataToDelete: ISchedulePayload = parseData(schedule);
     try {
-        const response = await axios.delete(
-            `${API_URL}/api/horarios/eliminar`,
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: dataToDelete
-            });
-        return response;
+        const response = await apiClient.delete(
+            `/api/horarios/eliminar`,
+            { data: dataToDelete });
+        return response.data;
     } catch (error) {
-        console.error(error);
+        throw new Error("Error al eliminar la clase.");
     }
-    return {data: "Error al eliminar"};
 }
