@@ -3,179 +3,82 @@ import type { ISchedule } from "../models/ISchedule";
 import Structure from "../components/Structure";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
-import InputField from "../components/InputField";
-import adminS from "./Admin.module.css"
-import { deleteClass, getScheduleFrom, saveScheduleData } from "../services/ScheduleService";
-// import { saveScheduleData } from "../services/ScheduleService";
-
-function getCareerColor(grupo_id: string): string {
-    return grupo_id.includes("sis") ? "var(--color-sistemas)" :
-        grupo_id.includes("inf") ? "var(--color-informatica)" :
-            grupo_id.includes("ind") ? "var(--color-industrial)" :
-                grupo_id.includes("adm") ? "var(--color-administracion)" :
-                    grupo_id.includes("ele") ? "var(--color-electrica)" :
-                        grupo_id.includes("mec") ? "var(--color-mecatronica)" :
-                            "var(--color-neutral-2";
-}
+import { getScheduleFrom } from "../services/ScheduleService";
+import ModalAdmin from "../components/ModalAdmin";
+import TableAdmin from "../components/TableAdmin";
+import { obtenerNombresMaestros } from "../services/TeacherService";
 
 type CellKey = string;
 
 export default function Admin() {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadScheduleFrom("1");
-    }, []);
-
+    // Mostrar/Ocultar el modal
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // Saber que celda está abriendo
     const [selectedCell, setSelectedCell] = useState<CellKey | null>(null);
+    // Todos los horarios de la tabla
     const [scheduleData, setScheduleData] = useState<Record<CellKey, ISchedule>>({});
+
+    // Pidiendo horarios
     const [loading, setLoading] = useState(false);
-    const [isSaved, setIsSaved] = useState(true);
 
-    // Estado local del formulario
-    const [formData, setFormData] = useState<ISchedule>({
-        materia: "",
-        dia_semana: "",
-        hora_inicio: "",
-        hora_fin: "",
-        maestro: "",
-        grupo_id: "",
-    });
+    // Hooks para buscar maestros
+    const [listTeachers, setListTeachers] = useState<string[]>([]);
+    const [loadingTeachers, setLoadingTeachers] = useState<boolean>(true);
 
+    // Mostrar los horarios del laboratorio n
     const loadScheduleFrom = async (labNumber: string) => {
         setLoading(true);
-        setIsSaved(true);
         setScheduleData({});
-        const schedules = await getScheduleFrom(labNumber);
 
-        if (schedules) {
-            const newScheduleData: Record<string, any> = {};
+        try {
+            const schedules = await getScheduleFrom(labNumber);
 
-            schedules.forEach((s) => {
-                const horaInicio = s.hora_inicio.slice(0, -3);
-                const horaFin = s.hora_fin.slice(0, -3);
-                const cellKey = `${s.dia_semana}-${horaInicio}-${horaFin}`;
-                const classData = {
-                    materia: s.materia,
-                    dia_semana: s.dia_semana,
-                    hora_inicio: horaInicio,
-                    hora_fin: horaFin,
-                    maestro: s.maestro,
-                    grupo_id: s.grupo_id,
-                };
-                //console.log(cellKey, classData);
-                newScheduleData[cellKey] = classData;
-            });
-
-            setScheduleData((prev) => ({
-                ...prev,
-                ...newScheduleData,
-            }));
+            if (schedules && schedules.length > 0) {
+                const newData = parseSchedules(schedules);
+                setScheduleData(newData);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
             setLoading(false);
         }
     };
 
-    function parseData(): ISchedule[] {
-        let schedulesForSave: ISchedule[] = [];
+    // Limpiar los datos devueltos por el backend y generar la cellkey
+    function parseSchedules(schedules: ISchedule[]): Record<string, any> {
+        const newScheduleData: Record<string, any> = {};
 
-        Object.keys(scheduleData).forEach((sd, index) => {
-            schedulesForSave.push(scheduleData[sd]);
-            const dataTemp = sd.split("-");
-            schedulesForSave[index].dia_semana = dataTemp[0];
-            schedulesForSave[index].hora_inicio = dataTemp[1].concat(":00");
-            schedulesForSave[index].hora_fin = dataTemp[2].concat(":00");
-            schedulesForSave[index].fase = 1;
-            const select = document.getElementById("sLaboratoryNumber") as HTMLSelectElement;
-            schedulesForSave[index].laboratorio = parseInt(select.value);
+        schedules.forEach((s) => {
+            const horaInicio = s.hora_inicio.slice(0, -3);
+            const horaFin = s.hora_fin.slice(0, -3);
+            const cellKey = `${s.dia_semana}-${horaInicio}-${horaFin}`;
+            const classData = {
+                materia: s.materia,
+                dia_semana: s.dia_semana,
+                hora_inicio: horaInicio,
+                hora_fin: horaFin,
+                maestro: s.maestro,
+                grupo_id: s.grupo_id,
+            };
+            newScheduleData[cellKey] = classData;
         });
-
-        return schedulesForSave;
+        return newScheduleData;
     }
 
-    const modalIsEmpty = (): boolean => {
-        return formData.materia.trim() == "" &&
-            formData.maestro.trim() == "" &&
-            formData.grupo_id.trim() == "" ?
-            true : false;
-    }
+    useEffect(() => {
+        // Cargar horarios
+        loadScheduleFrom("1");
 
-    const closeModal = () => {
-        setFormData({
-            materia: "",
-            dia_semana: "",
-            hora_inicio: "",
-            hora_fin: "",
-            maestro: "",
-            grupo_id: "",
-        });
-        setIsModalOpen(false);
-        setIsSaved(true);
-    };
-
-
-    // Al hacer click en una celda
-    const handleCellClick = (cellKey: CellKey) => {
-        setSelectedCell(cellKey);         // recuerda cuál celda
-        setIsModalOpen(true);             // abre el modal
-        setIsSaved(false);
-
-        // Si ya había datos en esa celda, los precarga en el form
-        if (scheduleData[cellKey]) {
-            setFormData(scheduleData[cellKey]);
-        } else {
-            setFormData({
-                materia: "",
-                dia_semana: "",
-                hora_inicio: "",
-                hora_fin: "",
-                maestro: "",
-                grupo_id: "",
-            });
-        }
-    };
-
-    // Al hacer submit del formulario
-    const handleSubmit = () => {
-        if (!selectedCell) return;
-
-        if (!modalIsEmpty())
-            setScheduleData((prev) => ({ // Guarda los datos usando la celda como "llave"
-                ...prev,
-                [selectedCell]: formData,
-            }));
-
-        setIsModalOpen(false); // cierra el modal
-        setIsSaved(false); // Hay cambios sin guardar
-    };
-
-    const handleDelete = () => {
-        if (!selectedCell) return;
-
-        const dataCell = scheduleData[selectedCell];
-        let dataToSentd = parseData().filter(c => c.dia_semana == dataCell.dia_semana).find(c => c.hora_inicio == dataCell.hora_inicio);
-        deleteClass(dataToSentd).then((res) => {
-            console.log("handleDelete", res.data)
-        });
-
-        setIsModalOpen(false);
-
-        delete scheduleData[selectedCell];
-        setScheduleData(scheduleData);
-
-        setIsSaved(true);
-    }
-
-    const saveSchedule = () => {
-        saveScheduleData(parseData()).then(() => {
-            setIsSaved(true);
-        });
-    }
-
-    // DATOS DE EJEMPLO 
-    const hours = ["07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00",
-        "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"];
-    const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        // Cargar maestros
+        const cargarMaestros = async () => {
+            const names = await obtenerNombresMaestros();
+            setListTeachers(names);
+            setLoadingTeachers(false);
+        };
+        cargarMaestros();
+    }, []);
 
     return (
         <Structure title='DEFINIR HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Administrador`}
@@ -242,120 +145,24 @@ export default function Admin() {
                     </nav>
 
                     <div>
-                        {/* ====== TABLA ====== */}
-                        <table className="table is-bordered is-fullwidth " style={{ backgroundColor: "var(--color-fondo)" }}>
-                            <thead>
-                                <tr>
-                                    <th className="has-text-centered" style={{ color: "var(--color-fuente)" }}>Hora</th>
-                                    {days.map((day) => (
-                                        <th className="has-text-centered"
-                                            key={day} style={{ color: "var(--color-fuente)" }}
-                                            colSpan={day == "Sabado" ? 2 : 1}>
-                                            {day}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {hours.map((hour) => (
-                                    <tr key={hour}>
-                                        <td className="has-text-centered" style={{ color: "var(--color-fuente)" }}>{hour}</td>
-                                        {days.map((day) => {
-                                            const cellKey = `${day}-${hour}`;        // clave única
-                                            const cellInfo = scheduleData[cellKey];  // busca si hay datos
-                                            return (
-                                                <td
-                                                    key={cellKey}
-                                                    onClick={() => handleCellClick(cellKey)}
-                                                    style={{
-                                                        cursor: "pointer", minWidth: "120px",
-                                                        backgroundColor: cellInfo ? getCareerColor(cellInfo.grupo_id.toLocaleLowerCase()) : ""
-                                                    }}
-                                                    className={cellInfo ? `has-text-black ${adminS.cellInfoVisible}` : "has-text-centered"}
-                                                >
-                                                    {/* Falta agregar el color por carrera - IA quedó*/}
-                                                    {cellInfo ? (
-                                                        <div>
-                                                            <small><b>{cellInfo.materia}</b></small>
-                                                            <br />
-                                                            <small>{cellInfo.maestro}</small>
-                                                            <br />
-                                                            <small>{cellInfo.grupo_id}</small>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="has-text-grey-light">
-                                                            <i className="fa-solid fa-plus"></i>
-                                                        </span>
-                                                    )}
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
 
-                        {/* ====== MODAL DE BULMA ====== */}
-                        {/* La clase "is-active" es lo que lo hace visible en Bulma */}
-                        <div className={`modal ${isModalOpen ? "is-active" : ""}`}>
-                            <div className="modal-background" onClick={closeModal} />
-                            <div className="modal-card">
-                                <header className="modal-card-head" style={{ backgroundColor: "var(--color-primario)" }}>
-                                    <span className={`icon is-medium mr-5 ${adminS.iconHead}`}>
-                                        <i className="far fa-calendar fa-2x"></i>
-                                    </span>
-                                    <p className="modal-card-title">
-                                        Agregar clase • {selectedCell}
-                                    </p>
-                                    <button
-                                        className="delete is-large"
-                                        onClick={closeModal}
-                                    />
-                                </header>
+                        <TableAdmin
+                            scheduleData={scheduleData}
+                            setIsModalOpen={setIsModalOpen}
+                            setSelectedCell={setSelectedCell}
+                        />
 
-                                <section className="modal-card-body" style={{ backgroundColor: "var(--color-fondo)", borderBlockEnd: "2px solid var(--color-neutral-2)" }}>
+                        <ModalAdmin
+                            isModalOpen={isModalOpen}
+                            setIsModalOpen={setIsModalOpen}
+                            scheduleData={scheduleData}
+                            selectedCell={selectedCell}
+                            setScheduleData={setScheduleData}
+                            listTeachers={listTeachers}
+                            loadingTeachers={loadingTeachers}
+                        />
 
-                                    <InputField
-                                        label={"Materia"}
-                                        placeholder={"Ej: Cálculo diferencial"}
-                                        type={"text"} icon={"fas fa-book"}
-                                        value={formData.materia}
-                                        onChange={(e) => setFormData({ ...formData, materia: e.toUpperCase() })}
-                                    />
-
-                                    <InputField
-                                        label={"Docente"}
-                                        placeholder={"Ej: Ing. Jesus"}
-                                        type={"text"} icon={"fas fa-user"}
-                                        value={formData.maestro}
-                                        onChange={(e) => setFormData({ ...formData, maestro: e.toUpperCase() })}
-                                    />
-
-                                    <InputField
-                                        label={"Grupo"}
-                                        placeholder={"Ej: G1MSIS08"}
-                                        type={"text"} icon={"fas fa-users"}
-                                        value={formData.grupo_id}
-                                        onChange={(e) => setFormData({ ...formData, grupo_id: e.toUpperCase() })}
-                                    />
-
-                                </section>
-
-                                <footer className="modal-card-foot" style={{ backgroundColor: "var(--color-fondo)" }}>
-                                    <div className="field is-grouped">
-                                        <Button texto={"Guardar"} iconIzquierdo="fas fa-save" onclick={handleSubmit} />
-                                        <Button texto={"Cancelar"} iconIzquierdo="fas fa-times" variante="secundario" onclick={closeModal} />
-                                        {formData.grupo_id && isSaved ?
-                                            <Button texto={"Eliminar"} iconIzquierdo="fas fa-trash" variante="secundario" onclick={handleDelete} />
-                                            : <></>
-                                        }
-
-                                    </div>
-                                </footer>
-                            </div>
-                        </div>
-
-                        <Button texto={`${isSaved ? "Guardado" : "Guardar"}`} iconIzquierdo={`${isSaved ? 'fa-regular fa-square-check' : 'fas fa-save'}`} onclick={saveSchedule} />
+                        {/* <Button texto={`${isSaved ? "Guardado" : "Guardar"}`} iconIzquierdo={`${isSaved ? 'fa-regular fa-square-check' : 'fas fa-save'}`} onclick={saveSchedule} /> */}
 
                     </div>
 

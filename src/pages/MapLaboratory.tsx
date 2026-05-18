@@ -1,7 +1,7 @@
 import Structure from "../components/Structure";
 import Button from "../components/Button"
 import styles from "./Login.module.css";
-import { replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CardMap from "../components/CardMap";
 import type { ILaboratoryData } from "../models/ILaboratoryData";
 import { getScheduleFrom } from "../services/ScheduleService";
@@ -26,7 +26,7 @@ export default function MapLaboratory() {
             const laboratoryData: ILaboratoryData = {
                 schedules: data
             };
-            console.log(data);
+            //console.log(data);
 
             navigate(`/horario/${labNumber}`, { state: laboratoryData });
         }).catch(() => {
