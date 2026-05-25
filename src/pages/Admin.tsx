@@ -17,6 +17,8 @@ export default function Admin() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     // Saber que celda está abriendo
     const [selectedCell, setSelectedCell] = useState<CellKey | null>(null);
+    const [laboratory, setLaboratory] = useState<string>("1");
+
     // Todos los horarios de la tabla
     const [scheduleData, setScheduleData] = useState<Record<CellKey, ISchedule>>({});
 
@@ -31,12 +33,13 @@ export default function Admin() {
     const loadScheduleFrom = async (labNumber: string) => {
         setLoading(true);
         setScheduleData({});
+        setLaboratory(labNumber);
 
         try {
             const schedules = await getScheduleFrom(labNumber);
 
             if (schedules && schedules.length > 0) {
-                const newData = parseSchedules(schedules);
+                const newData = parseSchedules(schedules, labNumber);
                 setScheduleData(newData);
             }
         } catch (error) {
@@ -47,7 +50,7 @@ export default function Admin() {
     };
 
     // Limpiar los datos devueltos por el backend y generar la cellkey
-    function parseSchedules(schedules: ISchedule[]): Record<string, any> {
+    function parseSchedules(schedules: ISchedule[], laboratory: string): Record<string, any> {
         const newScheduleData: Record<string, any> = {};
 
         schedules.forEach((s) => {
@@ -61,6 +64,7 @@ export default function Admin() {
                 hora_fin: horaFin,
                 maestro: s.maestro,
                 grupo_id: s.grupo_id,
+                laboratorio: laboratory,
             };
             newScheduleData[cellKey] = classData;
         });
@@ -160,9 +164,8 @@ export default function Admin() {
                             setScheduleData={setScheduleData}
                             listTeachers={listTeachers}
                             loadingTeachers={loadingTeachers}
+                            laboratory={laboratory}
                         />
-
-                        {/* <Button texto={`${isSaved ? "Guardado" : "Guardar"}`} iconIzquierdo={`${isSaved ? 'fa-regular fa-square-check' : 'fas fa-save'}`} onclick={saveSchedule} /> */}
 
                     </div>
 

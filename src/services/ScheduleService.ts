@@ -9,7 +9,7 @@ interface ISchedulePayload {
     hora_inicio: string;
     hora_fin: string;
     fase: number;
-    laboratorio: number;
+    laboratorio: string;
     grupo_id: string;
 }
 
@@ -43,7 +43,7 @@ function parseData(data: ISchedule): ISchedulePayload {
         "dia_semana": data.dia_semana,
         "hora_inicio": data.hora_inicio,
         "hora_fin": data.hora_fin,
-        "fase": data.fase!,
+        "fase": data.fase || 1,
         "laboratorio": data.laboratorio!,
         "grupo_id": data.grupo_id.toUpperCase(),
     };
@@ -59,6 +59,7 @@ export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> =
 }
 
 export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
+    console.log(schedule)
     try {
         const dataSend: ISchedulePayload[] = schedule.map(parseData);
 
@@ -74,12 +75,13 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
 
 export const deleteSchedule = async (schedule: ISchedule) => {
     const dataToDelete: ISchedulePayload = parseData(schedule);
+    console.log("deleteShcedule", dataToDelete)
     try {
         const response = await apiClient.delete(
             `/api/horarios/eliminar`,
             { data: dataToDelete });
         return response.data;
     } catch (error) {
-        throw new Error("Error al eliminar la clase.");
+        throw new Error("Error al eliminar la clase. " + error);
     }
 }
