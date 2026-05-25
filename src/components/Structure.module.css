@@ -107,7 +107,40 @@
     .navbarInner{
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
+        padding: 1rem;
+        text-align: center;
     }
     
+    .navLeft, .navCenter, .navRight{
+        justify-content: center;
+        width: 100%;
+    }
+
+    .navCenter{
+        white-space: normal;
+    }
+
+    .navbarTitle{
+        font-size: 1.15rem;
+        line-height: 1.3;
+    }
+
+    .fondo{
+        width: 120%;
+        max-width: 350px;
+        opacity: 0.3;
+    }
+
+    .footerContent{
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .footerActions{
+        justify-content: center;
+        width: 100%;
+    }
 }

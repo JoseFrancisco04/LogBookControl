@@ -81,3 +81,29 @@
     text-align: center;
     font-weight: bold;
 }
+
+@media (max-width: 768px){
+    .modalCard{
+        width: 95%;
+        max-width: 90vh;
+        overflow: auto;
+    }
+
+    .modalHeader{
+        padding: 1.5rem 1.25rem 1rem 1.25rem;
+    }
+
+    .modalBody{
+        padding: 1rem 1.25rem;
+    }
+
+    .modalFooter{
+        padding: 1rem 1.25rem 1.5rem 1.25rem;
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .modalFooter button{
+        width: 100%;
+    }
+}

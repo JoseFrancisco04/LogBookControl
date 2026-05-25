@@ -57,3 +57,29 @@
     padding-top: 4rem; 
     padding:  0 0.5rem 0.5rem 0.5rem; 
 }
+
+@media (max-width: 768px){
+    .mainContainer{
+        padding: 1rem;
+    }
+
+    .formBody{
+        padding: 1.5rem;
+    }
+
+    .gridRow4,
+    .gridRow3,
+    .gridRow2{
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .actionsContainer{
+        flex-direction: column;
+        padding-top: 2rem;
+    }
+
+    .actionsContainer button{
+        width: 100%;
+    }
+}

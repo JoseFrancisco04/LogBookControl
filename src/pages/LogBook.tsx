@@ -30,10 +30,11 @@ export default function LogBook() {
                 setCharging(true);
                 const fechaHoy = getDate();
                 const data = await getLogBookForDate(fechaHoy);
-                setRegistros(data);
+                setRegistros(data ?? []);
 
             } catch (error) {
                 console.error("Error al cargar la bitácora", error);
+                setRegistros([]);
 
             } finally {
                 setCharging(false);
@@ -48,9 +49,7 @@ export default function LogBook() {
                 {/*<Button texto="Imprimir Bítacora" variante="inverso" icono="fas fa-print"></Button>*/}
                 <Button texto="Cerrar Sesión" variante="inverso" iconIzquierdo="fa-sign-out-alt" onclick={() => setIsLogoutModal(true)}></Button>
             </>}>
-            <div className={styles.mainContainer}>
-
-                {/* <div className={styles.headerCard}>
+             {/* <div className={styles.headerCard}>
                     <img src={logoTec} alt="Logo TEC" className={styles.logo} />
                     <div className={styles.headerCenter}>
                         <h1 className={styles.title}>
@@ -69,7 +68,7 @@ export default function LogBook() {
 
                     </div>
                 </div>*/}
-
+            <div className={styles.mainContainer}>
                 <div className={styles.sectionTitleContainer}>
                     <div className={styles.titleGroup}>
                         <span className={styles.protocolText}>EJECUCIÓN DE PROTOCOLO INSTITUCIONAL</span>
@@ -100,21 +99,30 @@ export default function LogBook() {
                             </thead>
                             <tbody>
                                 {charging ? (
-                                    <tr>
-                                        <td colSpan={11} style={{ textAlign: 'center', padding: '3rem' }}>
-                                            <i className="fas fa-spinner fa-spin" style={{ fontSize: '2rem', color: 'var(--color-primario)' }}></i>
-                                            <p style={{ marginTop: '1rem', color: 'var(--color-neutral-3)' }}>Cargando registros...</p>
-                                        </td>
-                                    </tr>
-                                ) : registros.length === 0 ? (
+                                    [...Array(5)].map((_, index) => (
+                                        <tr key={`tr-skel-${index}`}>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.short}`}></div></td>
+                                            <td><div className={styles.skeletonBlock}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.medium}`}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.short}`}></div></td>
+                                            <td><div className={styles.skeletonBlock}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.short}`}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.short}`}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.short}`}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.medium}`}></div></td>
+                                            <td><div className={`${styles.skeletonBlock} ${styles.medium}`}></div></td>
+                                            <td><div className={styles.skeletonBlock}></div></td>
+                                        </tr>
+                                    ))
+                                ) : (registros?.length ?? 0) === 0 ? (
                                     <tr>
                                         <td colSpan={11} className={styles.emptyStates}>
                                             <i className="fas fa-clipboard-list"></i>
                                             <p>No hay registros de asistencia para el día de hoy</p>
                                         </td>
                                     </tr>
-                                ): (
-                                    registros.map((registro) =>(
+                                ) : (
+                                    registros.map((registro) => (
                                         <tr key={registro.id}>
                                             <td>{registro.fecha}</td>
                                             <td>{registro.nombre_docente}</td>
@@ -122,7 +130,7 @@ export default function LogBook() {
                                             <td>{registro.carrera || 'N/A'}</td>
                                             <td>{registro.practica_nombre}</td>
                                             <td>{registro.unidad}</td>
-                                            <td>{registro.registrada ? 'Si':'No'}</td>
+                                            <td>{registro.registrada ? 'Si' : 'No'}</td>
                                             <td>{registro.alumnos_atendidos}</td>
                                             <td>{registro.hora_entrada}</td>
                                             <td>{registro.hora_salida}</td>
@@ -135,7 +143,6 @@ export default function LogBook() {
                     </div>
                 </div>
             </div>
-
             <LogoutModal
                 isOpen={isLogoutModal}
                 onClose={() => { setIsLogoutModal(false) }}

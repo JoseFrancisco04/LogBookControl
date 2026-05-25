@@ -152,3 +152,55 @@
     margin-bottom: 1rem;
     display: block;
 }
+
+
+.skeletonBlock{
+    background: #e2e8f0;
+    background: linear-gradient(
+        90deg,
+        rgba(226,232,240,1) 25%,
+        rgba(241,245,249,1) 50%,
+        rgba(226,232,240,1) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+    height: 1.25rem;
+    width: 100%;
+}
+
+.skeletonBlock.short {width: 50%;}
+.skeletonBlock.medium {width: 75%;}
+.skeletonBlock.title {height: 2rem; width: 60%;}
+.skeletonBlock.button {height: 2.5rem; border-radius: 8px;}
+
+@keyframes shimmer {
+    0% {background-position: 200% 0;}
+    100% {background-position: -200% 0;}
+}
+
+@media (max-width: 768px){
+    .mainContainer{
+        padding: 1rem;
+    }
+
+    .sectionTitleContainer{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .titleGroup{
+        width: 100%;
+    }
+
+    .sectionTitleContainer > div:last-child,
+    .sectionTitleContainer button{
+        width: 100%;
+    }
+
+    .mainHadding{
+        font-size: 1.75rem;
+    }
+}

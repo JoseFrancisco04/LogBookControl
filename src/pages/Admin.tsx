@@ -67,6 +67,15 @@ export default function Admin() {
         return newScheduleData;
     }
 
+    const logOut = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('rol');
+        localStorage.removeItem('num_control');
+
+        navigate('/', { replace: true });
+
+    }
+
     useEffect(() => {
         // Cargar horarios
         loadScheduleFrom("1");
@@ -86,10 +95,7 @@ export default function Admin() {
                 <Button texto="Maestros" variante="inverso" icono="fa-regular fa-chalkboard-user" onclick={() => {
                     navigate("/teachers")
                 }}></Button>
-                <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
-                    localStorage.setItem('isLoggedIn', 'false');
-                    navigate("/login")
-                }}></Button>
+                <Button texto="Cerrar Sesión" variante="inverso" icono="fal fa-sign-out-alt" onclick={logOut}></Button>
             </>}>
 
 

@@ -33,33 +33,21 @@ export const router = createBrowserRouter([
         element: <LaboratorySchedule />,
         errorElement: <ErrorPage />
     },
-
     {
-        // Envolvemos esta sección con nuestro guardia
-        element: <ProtectedRoute />,
+        element: <ProtectedRoute allowedRoles={['administrador']}/>,
         children: [
-            {
-                path: '/admin',
-                element: <Admin />,
-            },
-            {
-                path: '/teachers',
-                element: <Teachers />,
-            },
-            {
-                path: '/statistics',
-                element: <Statistics />,
-            },
-            {
-                path: '/bitacora',
-                element: <LogBook />
-            },
-            {
-                path: '/bitacora/FormLogBook',
-                element: <FormLogBook />
-            }
-            // Si mañana agregas más pantallas para el admin, las pones aquí:
-            // { path: '/admin/configuracion', element: <Configuracion /> }
+            {path: '/admin', element: <Admin/>},
+            {path: '/teachers', element: <Teachers/>},
+            {path: '/statistics', element: <Statistics/>}
+        ]
+
+    },
+    {
+        element: <ProtectedRoute allowedRoles={['bitacora']}/>,
+        children: [
+            {path: '/bitacora', element: <LogBook/>},
+            {path: '/bitacora/FormLogBook', element: <FormLogBook/>}
+        
         ],
     },
     {
