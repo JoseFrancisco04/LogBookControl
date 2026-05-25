@@ -7,5 +7,5 @@ export interface ISchedule {
     grupo_id: string; 
 
     fase?: number;
-    laboratorio?: number;
+    laboratorio?: string;
 }

@@ -15,6 +15,8 @@ interface Props {
     // Key del modal
     selectedCell: CellKey | null;
 
+    laboratory: string;
+
     // Guardado de datos
     scheduleData: Record<CellKey, ISchedule>;
     setScheduleData: React.Dispatch<React.SetStateAction<Record<CellKey, ISchedule>>>;
@@ -26,17 +28,19 @@ interface Props {
 
 type CellKey = string;
 
-export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setScheduleData, listTeachers, loadingTeachers }: Props) => {
+export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, scheduleData, setScheduleData, listTeachers, loadingTeachers }: Props) => {
 
     // Hook con los datos del form (solo materia, maestro y grupo_id
     // los demás se obtienen de cellkey)
     const [formData, setFormData] = useState<ISchedule>({
-        materia: "",
         dia_semana: "",
-        hora_inicio: "",
-        hora_fin: "",
-        maestro: "",
+        fase: 1,
         grupo_id: "",
+        hora_fin: "",
+        hora_inicio: "",
+        laboratorio: laboratory,
+        maestro: "",
+        materia: "",
     });
 
     // Mostrar el botón de eliminar solo si está guardado
@@ -44,6 +48,17 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setSc
 
     // Mientras se hacen las peticiones
     const [isSending, setIsSending] = useState(false);
+
+    const clearFormData = () => setFormData({
+        dia_semana: "",
+        fase: 1,
+        grupo_id: "",
+        hora_fin: "",
+        hora_inicio: "",
+        laboratorio: laboratory,
+        maestro: "",
+        materia: "",
+    });
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -62,22 +77,44 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setSc
         setIsSending(true);
 
         try {
-            const scheduleArray = [scheduleData[selectedCell]];
+            
+            const scheduleArray = await parseDataToSave(selectedCell);
             await saveScheduleData(scheduleArray);
-
-            // Solo lo guarda si los valores se insertaron
+            
             setScheduleData((prev) => ({
                 ...prev,
                 [selectedCell]: formData,
             }));
+            
             setIsModalOpen(false); // cierra el modal
         } catch (error) {
             console.error(error);
+            // delete scheduleData[selectedCell];
+            // setScheduleData(scheduleData);
         } finally {
             setIsSending(false);
         }
-
     };
+
+    const parseDataToSave = (cellKey: CellKey): ISchedule[] => {
+        // Separación de la CellKey
+        const values = cellKey.split("-");
+        const day = values[0];
+        const start = values[1] + ":00";
+        const end = values[2] + ":00";
+        
+        const newData: ISchedule = {
+            grupo_id: formData.grupo_id,
+            dia_semana: day,
+            hora_inicio: start,
+            hora_fin: end,
+            maestro: formData.maestro,
+            materia: formData.materia,
+            fase: formData.fase,
+            laboratorio: formData.laboratorio,
+        };
+        return [newData];
+    }
 
     const handleDelete = async () => {
         if (!selectedCell || modalIsEmpty()) return;
@@ -109,14 +146,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setSc
             setFormData(existingData);
             setIsSaved(true);
         } else {
-            setFormData({
-                materia: "",
-                dia_semana: "",
-                hora_inicio: "",
-                hora_fin: "",
-                maestro: "",
-                grupo_id: "",
-            });
+            clearFormData();
             setIsSaved(false);
         }
     }, [selectedCell, scheduleData]);
@@ -128,9 +158,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setSc
             <div className="modal-card">
                 <header className={`modal-card-head ${style.cardHead}`}>
                     <span className={`icon is-medium mr-5 ${style.iconHead}`}>
-                        {isSending ?
-                            <i className="fa-solid fa-cloud-arrow-up fa-bounce fa-2x"></i> :
-                            <i className="far fa-calendar fa-2x"></i>}
+                        <i className="far fa-calendar fa-2x"></i>
                     </span>
                     <p className="modal-card-title">
                         Agregar clase • {selectedCell}
@@ -172,7 +200,11 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, scheduleData, setSc
 
                 <footer className={`modal-card-foot ${style.cardFoot}`}>
                     <div className="field is-grouped">
-                        <Button texto={"Guardar"} iconIzquierdo="fas fa-save" onclick={handleSubmit} />
+                        <Button texto={"Guardar"}
+                            iconIzquierdo={isSending ?
+                                "fa-solid fa-cloud-arrow-up fa-bounce" :
+                                "fas fa-save"}
+                            onclick={handleSubmit} />
                         <Button texto={"Cancelar"} iconIzquierdo="fas fa-times" variante="secundario" onclick={closeModal} />
                         {isSaved ?
                             <Button texto={"Eliminar"} iconIzquierdo="fas fa-trash" variante="secundario" onclick={handleDelete} />

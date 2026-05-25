@@ -4,7 +4,7 @@ import Structure from "../components/Structure";
 import InputField from "../components/InputField";
 import SearchableInput from "../components/SearchableInput";
 import { useEffect, useState } from "react";
-import { deleteTeacher, obtenerNombresMaestros, saveTeacher } from "../services/TeacherService";
+import { deleteTeacher, getTeachersData, obtenerNombresMaestros, saveTeacher } from "../services/TeacherService";
 import style from "./Teachers.module.css"
 
 export default () => {
@@ -30,6 +30,12 @@ export default () => {
 
     const [isSend, setIsSend] = useState(false);
 
+    const cargarMaestros = async () => {
+        const names = await obtenerNombresMaestros();
+        setListTeachers(names);
+        setLoadingTeachers(false);
+    };
+
     const isFormEmty = (): boolean => {
         const numControl = numberControl.trim();
         const nameComplete = name.trim();
@@ -46,6 +52,7 @@ export default () => {
     const handleSave = () => {
         if (!isFormEmty()) {
             setDataIsValid(true);
+            // Preguntar si se puede cambiar el número de control
             saveTeacher({
                 num_control: numberControl,
                 nombre_completo: name,
@@ -56,6 +63,7 @@ export default () => {
                     if (res.ok) {
                         setIsSend(true);
                         handleCancel();
+                        cargarMaestros();
                     }
                 });
         }
@@ -70,14 +78,23 @@ export default () => {
         setPassword("");
         setDataIsValid(true);
         setIsEditing(false);
+        setIsSend(false);
     }
 
-    const handleSearch = (value: string) => {
-        if (value.trim() != "") {
-            setName(value);
-            setTeacher("");
-            setIsEditing(true);
-        }
+    const handleSearch = async (value: string) => {
+        if (value.trim() == "") return;
+
+        const teachers = await getTeachersData();
+        const teacher = teachers.find((t) => t.nombre_completo == value);
+        if (!teacher) return;
+
+        console.log(teacher.carrera)
+        setNumberControl(teacher.num_control);
+        setName(teacher.nombre_completo);
+        setSelectedCareer(teacher.carrera);
+        setPassword(teacher.contraseña);
+        setTeacher("");
+        setIsEditing(true);
     }
 
     const handleDelete = () => {
@@ -89,17 +106,13 @@ export default () => {
                 carrera: selectedCareer
             }).then((res) => {
                 console.log(res)
-                setIsEditing(false);
+                handleCancel();
+                cargarMaestros();
             });
         }
     }
 
     useEffect(() => {
-        const cargarMaestros = async () => {
-            const names = await obtenerNombresMaestros();
-            setListTeachers(names);
-            setLoadingTeachers(false);
-        };
         cargarMaestros();
     }, []);
 
@@ -133,7 +146,7 @@ export default () => {
                                 <div className="level-item">
                                     <SearchableInput label={"Editar Docente"}
                                         placeholder={loadingTeachers ? "Buscando Docentes..." : "Editar Docente..."}
-                                        icon={"fa-solid fa-user-tie"} //sin icono porque se ve feo
+                                        icon={"fa-solid fa-user-tie"}
                                         options={listTeachers}
                                         value={teacher} onChange={setTeacher} />
                                     <Button texto={"Buscar"} tamaño="pequeño" variante="secundario" onclick={() => { handleSearch(teacher) }} />
@@ -177,7 +190,9 @@ export default () => {
 
                             <div className="column is-half">
                                 <div className="field">
-                                    <InputField label={"Contraseña de Acceso:"} placeholder={"Asigna una contraseña segura"} type={"text"} icon={"fas fa-lock"}
+                                    <InputField label={"Contraseña de Acceso:"} placeholder={"Asigna una contraseña segura"} type={"password"}
+                                        icon={"fas fa-lock"}
+                                        iconRight='fa-eye'
                                         value={password} onChange={setPassword} />
                                 </div>
                             </div>
