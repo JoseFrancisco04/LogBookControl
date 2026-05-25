@@ -66,3 +66,16 @@
     font-weight: bold;
 
 }
+
+@media (max-width: 768px){
+    .section{
+        padding: 1rem;
+    }
+
+    .card{
+        padding: 2rem 1.5rem;
+    }
+    .cardLogo{
+        height: 50px;
+    }
+}

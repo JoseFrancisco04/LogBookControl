@@ -10,13 +10,13 @@ interface SearchableInputProps{
     onChange: (value:string) => void;
 }
 
-export default function SearchableInput({label, placeholder, icon, options,value, onChange}: SearchableInputProps){
+export default function SearchableInput({label, placeholder, icon, options =[],value="", onChange}: SearchableInputProps){
     const [isOpen, setIsOpen]= useState(false);
 
-    const filteredOptions = options.filter(option =>
-        option.toLowerCase().includes(value.toLowerCase())
-
-    );
+    const filteredOptions = options.filter(option =>{
+        if (!option) return false;
+        return String(option).toLowerCase().includes(String(value).toLowerCase());
+    });
 
     const handleSelect = (option: string) =>{
         onChange(option);
@@ -29,8 +29,7 @@ export default function SearchableInput({label, placeholder, icon, options,value
 
             if(value !== ""){
                 const coincidenciaExacta = options.find(
-                    opt => opt.toLowerCase() == value.toLowerCase()
-
+                    opt => opt && String(opt).toLowerCase() === String(value).toLowerCase()
                 );
 
                 if(coincidenciaExacta){

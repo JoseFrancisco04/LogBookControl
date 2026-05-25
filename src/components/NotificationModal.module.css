@@ -48,3 +48,23 @@
     display: flex;
     justify-content: center;
 }
+
+@media (max-width: 768px){
+    .modalCard{
+        width: 95%;
+        padding: 1.5rem;
+        max-height: 90vh;
+        overflow: auto;
+    
+    }
+
+    .iconContainer{
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .message{
+        margin-bottom: 1.5rem;
+    }
+
+}
