@@ -122,8 +122,8 @@ export default () => {
                 <Button texto="Horarios" variante="inverso" icono="fa-regular fa-calendar-plus" onclick={() => {
                     navigate("/admin")
                 }} />
-                <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
-                    navigate("/")
+                <Button texto="Estadisticas" variante="inverso" icono="fal fa-chart-column" onclick={() => {
+                    navigate("/statistics")
                 }} />
             </>}>
 
