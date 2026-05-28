@@ -129,7 +129,7 @@ export default () => {
 
             <section className="section">
                 <div className="container">
-                    <div className={`p-6`}>
+                    <div className={`p-6 ${style.container}`}>
 
                         <nav className="level">
 

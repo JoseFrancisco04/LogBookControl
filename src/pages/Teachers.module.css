@@ -1,3 +1,13 @@
+.container{
+    background-color: var(--color-fondo) !important;
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 1500px;
+    overflow: hidden;
+}
+
 .titleS{
     color: var(--color-fuente);
     font-size: var(--fuente-grande);
