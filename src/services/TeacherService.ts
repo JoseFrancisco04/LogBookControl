@@ -28,6 +28,12 @@ apiClient.interceptors.response.use(
     }
 );
 
+/**
+ * Obtiene únicamente los nombres completos de todos los maestros.
+ * Útil para autocompletados o listas desplegables ligeras.
+ * 
+ * @returns {Promise<string[]>} Un arreglo con los nombres de los maestros. Retorna un arreglo vacío si hay un error.
+ */
 export const obtenerNombresMaestros = async (): Promise<string[]> => {
     try {
         const respuesta = await apiClient.get<IMaestrosRespuesta[]>(`/api/bitacora/maestros`);
@@ -40,6 +46,11 @@ export const obtenerNombresMaestros = async (): Promise<string[]> => {
     }
 };
 
+/**
+ * Obtiene toda la información detallada de los maestros registrados.
+ * 
+ * @returns {Promise<ITeacher[]>} Promesa que resuelve un arreglo con los datos completos de los maestros.
+ */
 export const getTeachersData = async (): Promise<ITeacher[]> => {
     try {
         const res = await apiClient.get<ITeacher[]>(`/api/bitacora/obtener_maestros`);
@@ -50,6 +61,12 @@ export const getTeachersData = async (): Promise<ITeacher[]> => {
     }
 }
 
+/**
+ * Registra o actualiza la información de un docente en la base de datos.
+ * 
+ * @param {any} dataToSave - Objeto con los datos del docente a guardar (ej. nombre, departamento, etc.).
+ * @returns {Promise<any>} La respuesta del backend tras intentar guardar.
+ */
 export const saveTeacher = async (dataToSave: any) => {
     try {
         const res = await apiClient.post(
@@ -62,6 +79,13 @@ export const saveTeacher = async (dataToSave: any) => {
     }
 }
 
+/**
+ * Elimina un docente de la base de datos.
+ * 
+ * @param {any} dataToDelete - Datos necesarios para identificar al docente que se va a eliminar (usualmente su ID o número de control).
+ * @returns {Promise<any>} La respuesta de confirmación del backend.
+ * @throws {Error} Lanza un error si falla la eliminación, útil para mostrar un modal de error en la UI.
+ */
 export const deleteTeacher = async (dataToDelete: any) => {
     try {
         //console.log("Borrando: ",JSON.stringify(dataToDelete)); 

@@ -67,6 +67,14 @@ apiClient.interceptors.response.use(
     }
 );
 
+/**
+ * Registra una nueva actividad en la bitácora del laboratorio.
+ * Requiere que el usuario tenga un token de autorización válido en su localStorage.
+ * 
+ * @param {LogBookData} datos - Objeto con toda la información requerida para el registro (docente, materia, horas, etc.).
+ * @returns {Promise<ResponseLogBook>} La respuesta del servidor confirmando el registro exitoso.
+ * @throws {Error} Si falla la conexión o si el servidor rechaza la petición.
+ */
 export const recordActivity = async (datos: LogBookData): Promise<ResponseLogBook> => {
     try {
         const token = localStorage.getItem('token');
@@ -93,6 +101,14 @@ export const recordActivity = async (datos: LogBookData): Promise<ResponseLogBoo
     }
 };
 
+/**
+ * Obtiene todos los registros de la bitácora para una fecha específica.
+ * Requiere que el usuario tenga un token de autorización válido en su localStorage.
+ * 
+ * @param {string} fecha - La fecha en formato 'YYYY-MM-DD' para consultar los registros.
+ * @returns {Promise<LogBookRecord[]>} Un arreglo con todos los registros encontrados para ese día.
+ * @throws {Error} Si la petición falla o no se cuenta con autorización.
+ */
 export const getLogBookForDate = async (fecha: string): Promise<LogBookRecord[]> =>{
     try{
         const token = localStorage.getItem('token');

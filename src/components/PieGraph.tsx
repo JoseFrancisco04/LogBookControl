@@ -7,14 +7,27 @@ import {
     Legend
 } from 'recharts';
 
+/**
+ * Propiedades esperadas para el componente PieGraph.
+ */
 interface Props {
+    /** Arreglo de datos a renderizar en la gráfica. (Ej: [{ name: 'A', value: 400 }]) */
     data: [];
+    /** La llave en los datos que contiene el valor numérico (ej. 'value') */
     keyValue: string;
+    /** La llave en los datos que contiene el nombre/etiqueta de la porción (ej. 'name') */
     keyName: string;
 }
 
 const COLORES = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
+/**
+ * Componente funcional que renderiza una gráfica de pastel (estilo Donut) usando Recharts.
+ * Se ajusta automáticamente al 100% del contenedor padre.
+ * 
+ * @param {Props} props - Propiedades para configurar la gráfica.
+ * @returns Elemento JSX que contiene la gráfica de pastel responsiva.
+ */
 export default ({ data, keyName, keyValue }: Props) => {
     return (
         // ResponsiveContainer permite que el gráfico se adapte al tamaño del div padre

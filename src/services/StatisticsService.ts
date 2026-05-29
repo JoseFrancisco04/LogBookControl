@@ -29,6 +29,12 @@ apiClient.interceptors.response.use(
     }
 );
 
+/**
+ * Obtiene el total de horas utilizadas agrupadas por carrera dentro de un rango de fechas.
+ * 
+ * @param {DateRange} dates - Objeto con la fecha de inicio, fin y opcionalmente el laboratorio.
+ * @returns {Promise<[]>} Arreglo con la información estadística por carrera.
+ */
 export const getHoursPerCareer = async (dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/carreras`;
@@ -43,6 +49,12 @@ export const getHoursPerCareer = async (dates: DateRange): Promise<[]> => {
     }
 }
 
+/**
+ * Obtiene el total de horas utilizadas agrupadas por cada laboratorio.
+ * 
+ * @param {DateRange} dates - Objeto con la fecha de inicio, fin y opcionalmente el laboratorio.
+ * @returns {Promise<[]>} Arreglo con la información estadística por laboratorio.
+ */
 export const getHoursPerLaboratory = async (dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/laboratorios`;
@@ -57,6 +69,13 @@ export const getHoursPerLaboratory = async (dates: DateRange): Promise<[]> => {
     }
 }
 
+/**
+ * Obtiene las horas que un docente específico ha utilizado el laboratorio en un periodo.
+ * 
+ * @param {string} numberControl - El número de control o identificador único del docente.
+ * @param {DateRange} dates - Rango de fechas a consultar.
+ * @returns {Promise<[]>} Arreglo con las estadísticas del docente.
+ */
 export const getHoursPerTeacher = async (numberControl: string, dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/docente/${numberControl}`;
@@ -71,6 +90,13 @@ export const getHoursPerTeacher = async (numberControl: string, dates: DateRange
     }
 }
 
+/**
+ * Obtiene la cantidad de horas que se ha impartido una materia específica en el laboratorio.
+ * 
+ * @param {string} subject - El nombre o identificador de la materia.
+ * @param {DateRange} dates - Rango de fechas a consultar.
+ * @returns {Promise<[]>} Arreglo con las horas de uso agrupadas por la materia.
+ */
 export const getHoursPerSubject = async (subject: string, dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/materia/${subject}`;
@@ -85,6 +111,13 @@ export const getHoursPerSubject = async (subject: string, dates: DateRange): Pro
     }
 }
 
+/**
+ * Obtiene detalles específicos sobre el uso de un laboratorio en concreto.
+ * 
+ * @param {string} id - El ID o nombre del laboratorio a consultar.
+ * @param {DateRange} dates - Rango de fechas.
+ * @returns {Promise<[]>} Arreglo con los detalles detallados del uso del laboratorio.
+ */
 export const getLaboratoryDetails = async (id: string, dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/laboratorio/${id}/detalles`;
