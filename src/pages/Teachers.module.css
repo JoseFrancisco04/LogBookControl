@@ -1,19 +1,109 @@
-.container{
-    background-color: var(--color-fondo) !important;
+.mainContainer {
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formCard {
+    background-color: var(--color-fondo);
     border-radius: 12px;
     box-shadow: var(--sombra-card);
     border: 1px solid rgba(0,0,0,0.05);
     width: 100%;
-    max-width: 1500px;
-    overflow: hidden;
+    max-width: 1200px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-.titleS{
-    color: var(--color-fuente);
-    font-size: var(--fuente-grande);
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 1.5rem;
+    gap: 2rem;
 }
 
-.subtitleS{
+.titleContainer {
+    flex: 1;
+}
+
+.titleS {
     color: var(--color-fuente);
-    font-size: var(--fuente-titulo);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.subtitleS {
+    color: var(--color-neutral-3);
+    font-size: var(--fuente-pequeña);
+    font-weight: 400;
+}
+
+.searchSection {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    min-width: 430px;
+}
+
+.searchSection > div {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.searchSection button {
+    height: 3rem !important;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.actionsContainer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .headerSection {
+        flex-direction: column;
+    }
+    .searchSection {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContainer {
+        padding: 1rem;
+    }
+    .formCard {
+        padding: 1.5rem;
+    }
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+    .actionsContainer {
+        flex-direction: column;
+        justify-content: center;
+    }
+    .actionsContainer > * {
+        width: 100%;
+    }
 }

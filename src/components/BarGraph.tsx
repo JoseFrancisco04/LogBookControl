@@ -1,4 +1,4 @@
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from "recharts";
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Cell } from "recharts";
 
 interface Props {
     graphData: [];
@@ -14,21 +14,28 @@ export default ({ graphData, dataX, dataY, nameBar }: Props) => {
                 <BarChart
                     data={graphData}
                 >
-                    {/* Cuadrícula de fondo opcional */}
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
 
                     {/* Configuración de los ejes */}
-                    <XAxis dataKey={dataX} />
-                    <YAxis />
+                    <XAxis dataKey={dataX} axisLine={false} tickLine={false} tick={{fill: 'var(--color-neutral-3)'}} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-neutral-3)'}} dx={-10} />
 
                     {/* Cuadro interactivo que se muestra al pasar el cursor */}
-                    <Tooltip />
+                    <Tooltip 
+                        cursor={{ fill: 'rgba(0,0,0,0.02)' }}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    />
 
                     {/* Leyenda de los colores del gráfico */}
-                    <Legend />
+                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
 
-                    {/* Definición de las barras (puedes agregar más de una) */}
-                    <Bar dataKey={dataY} fill="#8884d8" name={nameBar} />
+                    {/* Definición de las barras */}
+                    <Bar dataKey={dataY} name={nameBar} radius={[6, 6, 0, 0]} maxBarSize={60}>
+                        {graphData.map((entry, index) => {
+                            const COLORES = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28DFF', '#FF6B6B'];
+                            return <Cell key={`cell-${index}`} fill={COLORES[index % COLORES.length]} />;
+                        })}
+                    </Bar>
                 </BarChart>
             </ResponsiveContainer>
         </div>

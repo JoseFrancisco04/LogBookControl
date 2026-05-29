@@ -3,6 +3,7 @@ import Styles from "./FormLogBook.module.css"
 import Button from "../components/Button"
 import SearchableInput from "../components/SearchableInput";
 import InputField from "../components/InputField";
+import FloatingTimePicker from "../components/FloatingTimePicker";
 import YesNoToggle from "../components/YesNoToggle";
 import { useEffect, useState } from "react";
 import ConfirmModal from "../components/ConfirmModal";
@@ -135,8 +136,16 @@ export default function FormLogBook() {
                 <div className={Styles.formCard}>
                     <div className={Styles.formBody}>
                         <div className={Styles.gridRow3}>
-                            <InputField label="Hora de Entrada:" placeholder="--:--" type="time" icon="" value={horaEntrada} onChange={setHoraEntrada} />
-                            <InputField label="Hora de Salida:" placeholder="--:--" type="time" icon="" value={horaSalida} onChange={setHoraSalida} />
+                            <FloatingTimePicker 
+                                label="Hora de Entrada:" 
+                                selectedTime={horaEntrada} 
+                                onTimeSelect={setHoraEntrada} 
+                            />
+                            <FloatingTimePicker 
+                                label="Hora de Salida:" 
+                                selectedTime={horaSalida} 
+                                onTimeSelect={setHoraSalida} 
+                            />
                             <SearchableInput label="Laboratorio:" placeholder="Buscar Laboratorio" icon="fa-desktop" options={LABORATORIOS_DISPONIBLES} value={laboratorioSeleccionada} onChange={setLaboratorioSeleccionada} />
                         </div>
                         <div className={Styles.gridRow3}>

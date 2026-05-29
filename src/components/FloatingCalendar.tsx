@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Styles from "./FloatingCalendar.module.css";
 
 interface Props {
     label: string;
@@ -8,8 +9,7 @@ interface Props {
 
 /**
  * @returns Un calendario flotante
- * @description La neta se lo pedí a la IA y no sé que show, ahí le dices al autor que lo modifique
- * @author Gemini
+ * @description Rediseñado para encajar con el diseño del sistema
  */
 export default function FloatingCalendar({ label, selectedDate, onDateSelect }: Props) {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function FloatingCalendar({ label, selectedDate, onDateSelect }: 
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // Cerrar el dropdown al hacer clic fuera de él (Práctica Senior de UX)
+    // Cerrar el dropdown al hacer clic fuera de él
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -45,7 +45,7 @@ export default function FloatingCalendar({ label, selectedDate, onDateSelect }: 
     // Formateador exacto a YYYY-MM-DD para evitar problemas de zona horaria
     const formatToYYYYMMDD = (year: number, month: number, day: number) => {
         const y = year;
-        const m = String(month + 1).padStart(2, '0'); // Los meses en JS empiezan en 0
+        const m = String(month + 1).padStart(2, '0');
         const d = String(day).padStart(2, '0');
         return `${y}-${m}-${d}`;
     };
@@ -70,13 +70,14 @@ export default function FloatingCalendar({ label, selectedDate, onDateSelect }: 
             const isSelected = dateString === selectedDate;
 
             days.push(
-                <td key={day} className="has-text-centered p-1">
+                <td key={day}>
                     <button 
-                        className={`button is-small ${isSelected ? 'is-info' : 'is-white'}`}
-                        style={{ width: '100%', borderRadius: '50%' }}
-                        onClick={() => {
+                        type="button"
+                        className={`${Styles.dayButton} ${isSelected ? Styles.selected : ''}`}
+                        onClick={(e) => {
+                            e.preventDefault();
                             onDateSelect(dateString);
-                            setIsOpen(false); // Cerramos al seleccionar
+                            setIsOpen(false);
                         }}
                     >
                         {day}
@@ -105,69 +106,59 @@ export default function FloatingCalendar({ label, selectedDate, onDateSelect }: 
         return rows.map((d, i) => <tr key={i}>{d}</tr>);
     };
 
-    // Navegación de meses
-    const handlePrevMonth = () => {
+    const handlePrevMonth = (e: React.MouseEvent) => {
+        e.preventDefault();
         setCurrentViewDate(new Date(currentViewDate.getFullYear(), currentViewDate.getMonth() - 1, 1));
     };
 
-    const handleNextMonth = () => {
+    const handleNextMonth = (e: React.MouseEvent) => {
+        e.preventDefault();
         setCurrentViewDate(new Date(currentViewDate.getFullYear(), currentViewDate.getMonth() + 1, 1));
     };
 
     return (
-        <div className="field">
-            <label className="label" style={{ color: "var(--color-fuente)" }}>{label}</label>
-            <div className={`dropdown ${isOpen ? 'is-active' : ''}`} ref={dropdownRef}>
-                
-                {/* El Input que dispara el calendario flotante */}
-                <div className="dropdown-trigger">
-                    <button 
-                        className="button is-fullwidth" 
-                        aria-haspopup="true" 
-                        aria-controls="dropdown-menu"
-                        onClick={() => setIsOpen(!isOpen)}
-                    >
-                        <span className="icon is-small">
-                            <i className="fas fa-calendar-alt"></i>
+        <div className={Styles.field} ref={dropdownRef}>
+            <label className={Styles.label}>{label}</label>
+            
+            <button 
+                type="button"
+                className={`${Styles.input} ${isOpen ? Styles.isActive : ''}`} 
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                <span>{selectedDate ? selectedDate : "Seleccionar Fecha"}</span>
+            </button>
+            <span className={Styles.iconLeft}>
+                <i className="fas fa-calendar-alt"></i>
+            </span>
+
+            {isOpen && (
+                <div className={Styles.dropdown}>
+                    <div className={Styles.header}>
+                        <button type="button" className={Styles.navButton} onClick={handlePrevMonth}>
+                            <i className="fas fa-chevron-left"></i>
+                        </button>
+                        <span>
+                            {monthNames[currentViewDate.getMonth()]} {currentViewDate.getFullYear()}
                         </span>
-                        <span>{selectedDate ? selectedDate : "Seleccionar Fecha"}</span>
-                    </button>
-                </div>
-
-                {/* El menú flotante con el calendario */}
-                <div className="dropdown-menu" id="dropdown-menu" role="menu" style={{ minWidth: '300px' }}>
-                    <div className="dropdown-content p-3">
-                        
-                        {/* Cabecera del calendario */}
-                        <div className="level is-mobile mb-2">
-                            <button className="button is-small is-white level-left" onClick={handlePrevMonth}>
-                                <i className="fas fa-chevron-left"></i>
-                            </button>
-                            <div className="level-item has-text-weight-bold">
-                                {monthNames[currentViewDate.getMonth()]} {currentViewDate.getFullYear()}
-                            </div>
-                            <button className="button is-small is-white level-right" onClick={handleNextMonth}>
-                                <i className="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-
-                        {/* Cuadrícula usando la tabla de Bulma */}
-                        <table className="table is-narrow is-fullwidth is-borderless mb-0">
-                            <thead>
-                                <tr>
-                                    {weekDays.map(day => (
-                                        <th key={day} className="has-text-centered"><small>{day}</small></th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {renderCalendarGrid()}
-                            </tbody>
-                        </table>
-
+                        <button type="button" className={Styles.navButton} onClick={handleNextMonth}>
+                            <i className="fas fa-chevron-right"></i>
+                        </button>
                     </div>
+
+                    <table className={Styles.calendarTable}>
+                        <thead>
+                            <tr>
+                                {weekDays.map(day => (
+                                    <th key={day}>{day}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderCalendarGrid()}
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Structure from "../components/Structure";
-import { useState } from "react";
-import { getHoursPerCareer, getHoursPerLaboratory, getHoursPerSubject, getHoursPerTeacher } from "../services/StatisticsService";
+import { useState, useEffect } from "react";
+import { getHoursPerCareer, getHoursPerLaboratory, getHoursPerSubject, getHoursPerTeacher, getLaboratoryDetails } from "../services/StatisticsService";
 import FloatingCalendar from "../components/FloatingCalendar";
 import BarGraph from "../components/BarGraph";
-import InputField from "../components/InputField";
+import SearchableInput from "../components/SearchableInput";
 import Select from "../components/Select";
 import PieGraph from "../components/PieGraph";
+import { obtenerNombresMaestros, getTeachersData } from "../services/TeacherService";
+import { obtenerMaterias } from "../services/SubjectService";
+import Styles from "./Statistics.module.css";
 
 interface GraphParams {
     graphData: [];
@@ -45,6 +48,29 @@ export default () => {
     });
 
     const [paramFilter, setParamFilter] = useState<string>("");
+    const [hasSearched, setHasSearched] = useState<boolean>(false);
+
+    const [listaMaestros, setListaMaestros] = useState<string[]>([]);
+    const [cargandoMaestros, setCargandoMaestros] = useState<boolean>(true);
+
+    const [listaMateria, setListaMaterias] = useState<string[]>([]);
+    const [cargandoMateria, setCargandoMateria] = useState<boolean>(true);
+
+    useEffect(() => {
+        const cargarMaestros = async () => {
+            const nombres = await obtenerNombresMaestros();
+            setListaMaestros(nombres);
+            setCargandoMaestros(false);
+        };
+        cargarMaestros();
+
+        const cargarMaterias = async () => {
+            const materias = await obtenerMaterias();
+            setListaMaterias(materias);
+            setCargandoMateria(false);
+        };
+        cargarMaterias();
+    }, []);
 
     const loadPerCareer = async () => {
         const data = await getHoursPerCareer({
@@ -58,11 +84,14 @@ export default () => {
                 dataY: "total_horas",
                 nameBar: "Horas por Carrera"
             });
+        else {
+            setGraphParams({ graphData: [], dataX: "", dataY: "", nameBar: "" });
+        }
     }
 
-    // Pendiente: Ver bien que se necesita graficar
     const loadPerLaboratory = async () => {
-        const data = await getHoursPerLaboratory({
+        const labId = paramFilter.replace("Laboratorio ", "") || "1";
+        const data = await getLaboratoryDetails(labId, {
             fecha_inicio: startDate,
             fecha_fin: endDate
         });
@@ -71,44 +100,70 @@ export default () => {
                 graphData: data,
                 dataX: "carrera",
                 dataY: "total_sesiones",
-                nameBar: `Sesiones en Laboratorio ${paramFilter} por Carrera`
+                nameBar: `Sesiones en Laboratorio ${labId} por Carrera`
             });
+        else {
+            setGraphParams({ graphData: [], dataX: "", dataY: "", nameBar: "" });
+        }
     }
 
-    // Pendiente: buscar la forma de agregar el docente
     const loadPerTeacher = async () => {
-        const data = await getHoursPerTeacher(paramFilter, {
+        if (!paramFilter) return;
+
+        const teachers = await getTeachersData();
+        const teacher = teachers.find((t) => t.nombre_completo == paramFilter);
+        const numberControl = teacher ? teacher.num_control : paramFilter;
+
+        const data = await getHoursPerTeacher(numberControl, {
             fecha_inicio: startDate,
             fecha_fin: endDate
         });
-        if (data.length > 0)
+        if (data && data.length > 0)
             setGraphParams({
                 graphData: data,
-                dataX: "",
-                dataY: "",
+                dataX: "materia",
+                dataY: "total_horas",
                 nameBar: `Clases de ${paramFilter}`
             });
-        else console.log(data);
+        else {
+            setGraphParams({
+                graphData: [],
+                dataX: "",
+                dataY: "",
+                nameBar: ""
+            });
+            console.log("No hay datos:", data);
+        }
     }
 
-    // Pendiente: Lo mismo de Teacher
     const loadPerSubject = async () => {
+        if (!paramFilter) return;
         const data = await getHoursPerSubject(paramFilter, {
             fecha_inicio: startDate,
             fecha_fin: endDate
         });
-        if (data.length > 0)
+        if (data && data.length > 0)
             setGraphParams({
                 graphData: data,
-                dataX: "laboratorio",
+                dataX: "materia",
                 dataY: "total_horas",
                 nameBar: `Horas de ${paramFilter}`
             });
-        else console.log(data);
+        else {
+            setGraphParams({
+                graphData: [],
+                dataX: "",
+                dataY: "",
+                nameBar: ""
+            });
+            console.log("No hay datos:", data);
+        }
     }
 
     const handleFilter = () => {
         if (!startDate && !endDate) return;
+
+        setHasSearched(true);
 
         switch (typeGraph) {
             case "1":
@@ -132,111 +187,100 @@ export default () => {
             navbarActions={<>
                 <Button texto="Horarios" variante="inverso" icono="fal fa-table" onclick={() => navigate("/admin")}></Button>
             </>}>
-            <section className="section">
-                <div className="container">
-                    <nav className="level">
-                        <div className="level-left">
-                            <div className="level-item">
-                                <FloatingCalendar
-                                    label={"Fecha de Inicio"}
-                                    selectedDate={startDate}
-                                    onDateSelect={setStartDate} />
-                            </div>
-                            <div className="level-item">
-                                <FloatingCalendar
-                                    label={"Fecha Final"}
-                                    selectedDate={endDate}
-                                    onDateSelect={setEndDate} />
-                            </div>
-                            <div className="level-item">
-                                <Select
-                                    options={optionsGraph}
-                                    onChange={setTypeGraph}
-                                    title="Tipo de Grafica"
-                                    icon="fas fa-chart-line"
-                                />
-                            </div>
-                            <div className="level-item">
-                                {typeGraph == "2" ?
-                                    <Select
-                                        options={optionsLaboratory}
+            <div className={Styles.mainContainer}>
+                
+                <div className={Styles.filterCard}>
+                    <h2 className={Styles.sectionTitle}>Filtros de Búsqueda</h2>
+                    <div className={Styles.gridFilters}>
+                        <FloatingCalendar
+                            label={"Fecha de Inicio"}
+                            selectedDate={startDate}
+                            onDateSelect={setStartDate} />
+                        <FloatingCalendar
+                            label={"Fecha Final"}
+                            selectedDate={endDate}
+                            onDateSelect={setEndDate} />
+                        <Select
+                            options={optionsGraph}
+                            onChange={(val) => {
+                                setTypeGraph(val);
+                                setParamFilter("");
+                            }}
+                            title="Tipo de Gráfica"
+                            icon="fas fa-chart-line"
+                        />
+                        {typeGraph == "2" ?
+                            <Select 
+                                options={optionsLaboratory}
+                                onChange={setParamFilter}
+                                title="Laboratorio"
+                                icon="fas fa-computer"
+                            /> :
+                            typeGraph == "3" ?
+                                <SearchableInput
+                                    label={"Docente"}
+                                    placeholder={cargandoMaestros ? "Cargando Docentes..." : "Buscando docentes..."}
+                                    options={listaMaestros}
+                                    value={paramFilter}
+                                    onChange={setParamFilter}
+                                    icon={"fa-user-tie"} /> :
+                                typeGraph == "4" ?
+                                    <SearchableInput
+                                        label={"Materia"}
+                                        placeholder={cargandoMateria ? "Cargando Materias..." : "Buscando Materias..."}
+                                        options={listaMateria}
+                                        value={paramFilter}
                                         onChange={setParamFilter}
-                                        title="Laboratorio"
-                                        icon="fas fa-computer"
-                                    /> :
-                                    typeGraph == "3" ?
-                                        <InputField
-                                            label={"Docente"}
-                                            placeholder={"ej. Alano"}
-                                            type={"text"}
-                                            icon={"fas fa-user-tie"} /> :
-                                        typeGraph == "4" ?
-                                            <InputField
-                                                label={"Materia"}
-                                                placeholder={"ej. PistoLogia"}
-                                                type={"text"}
-                                                icon={"fas fa-book"} /> :
-                                            <></>
-                                }
-
-                            </div>
-                        </div>
-
-                        <div className="level-right">
-                            <div className="level-item">
-                                <Button
-                                    texto={"Filtrar"}
-                                    variante="primario"
-                                    iconIzquierdo="fas fa-filter"
-                                    onclick={handleFilter} />
-
-                            </div>
-                        </div>
-                    </nav>
-
-                    {graphParams.dataX != "" ?
-                        <div className="hero is-fullheight">
-                            <div className="hero-body p-0">
-                                <div className="container is-fluid w-100">
-                                    <div className="columns is-desktop is-marginless is-vcentered">
-                                        <div className="column is-6-desktop">
-                                            <div className="card">
-                                                <PieGraph
-                                                    data={graphParams.graphData}
-                                                    keyValue={"total_horas"}
-                                                    keyName={"carrera"}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="column is-6-desktop">
-                                            <div className="card p-4">
-                                                <BarGraph
-                                                    graphData={graphParams.graphData}
-                                                    dataX={graphParams.dataX}
-                                                    dataY={graphParams.dataY}
-                                                    nameBar={graphParams.nameBar}
-                                                />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        :
-                        // Icono de espera en lo que filtra las graficas
-                        <section className="section is-medium">
-                            <nav className="level">
-                                <div className="level-item has-text-centered">
-                                    <i className="fa-solid fa-cloud-arrow-down fa-beat-fade fa-2xl"></i>
-                                </div>
-                            </nav>
-                        </section>
-                    }
-                                        
+                                        icon={"fa-book"} /> :
+                                    <div />
+                        }
+                    </div>
+                    <div className={Styles.actionsContainer}>
+                        <Button
+                            texto={"Filtrar Resultados"}
+                            variante="primario"
+                            iconIzquierdo="fas fa-filter"
+                            onclick={handleFilter} />
+                    </div>
                 </div>
-            </section>
+
+                {graphParams.dataX != "" ?
+                    <div className={Styles.chartsContainer}>
+                        <div className={Styles.chartCard}>
+                            <PieGraph
+                                data={graphParams.graphData}
+                                keyValue={graphParams.dataY}
+                                keyName={graphParams.dataX}
+                            />
+                        </div>
+                        <div className={Styles.chartCard}>
+                            <BarGraph
+                                graphData={graphParams.graphData}
+                                dataX={graphParams.dataX}
+                                dataY={graphParams.dataY}
+                                nameBar={graphParams.nameBar}
+                            />
+                        </div>
+                    </div>
+                    :
+                    <div className={Styles.emptyState}>
+                        {hasSearched ? (
+                            <div className="has-text-centered">
+                                <i className="fa-solid fa-folder-open fa-3x mb-4" style={{color: "var(--color-neutral-3)"}}></i>
+                                <p className="has-text-grey title is-5 mb-2">No se encontraron datos</p>
+                                <p className="has-text-grey">Intenta seleccionar un rango de fechas diferente o cambiar los parámetros de búsqueda.</p>
+                            </div>
+                        ) : (
+                            <div className="has-text-centered">
+                                <i className="fa-solid fa-chart-pie fa-beat-fade fa-3x mb-4" style={{color: "var(--color-primario)"}}></i>
+                                <p className="has-text-grey title is-5 mb-2">Listo para graficar</p>
+                                <p className="has-text-grey">Aplica los filtros para visualizar las estadísticas del sistema.</p>
+                            </div>
+                        )}
+                    </div>
+                }
+
+            </div>
         </Structure>
     );
 }

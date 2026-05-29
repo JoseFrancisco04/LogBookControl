@@ -60,11 +60,11 @@ export const getHoursPerLaboratory = async (dates: DateRange): Promise<[]> => {
 export const getHoursPerTeacher = async (numberControl: string, dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/docente/${numberControl}`;
-        const response = await apiClient.get<[]>(url, {
+        const response = await apiClient.get(url, {
             params: dates
         });
 
-        return response.data;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error al obtener horas por docente:", error);
         return [];
@@ -74,13 +74,27 @@ export const getHoursPerTeacher = async (numberControl: string, dates: DateRange
 export const getHoursPerSubject = async (subject: string, dates: DateRange): Promise<[]> => {
     try {
         const url = `/api/estadisticas/materia/${subject}`;
-        const response = await apiClient.get<[]>(url, {
+        const response = await apiClient.get(url, {
             params: dates
         });
 
-        return response.data;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error al obtener horas por materia:", error);
+        return [];
+    }
+}
+
+export const getLaboratoryDetails = async (id: string, dates: DateRange): Promise<[]> => {
+    try {
+        const url = `/api/estadisticas/laboratorio/${id}/detalles`;
+        const response = await apiClient.get(url, {
+            params: dates
+        });
+        
+        return response.data.data || response.data;
+    } catch (error) {
+        console.error("Error al obtener detalles por laboratorio:", error);
         return [];
     }
 }
