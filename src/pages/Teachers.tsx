@@ -122,99 +122,113 @@ export default () => {
                 <Button texto="Horarios" variante="inverso" icono="fa-regular fa-calendar-plus" onclick={() => {
                     navigate("/admin")
                 }} />
-                <Button texto="Log Out" variante="inverso" icono="fal fa-sign-in-alt" onclick={() => {
-                    navigate("/")
+                <Button texto="Estadisticas" variante="inverso" icono="fal fa-chart-column" onclick={() => {
+                    navigate("/statistics")
                 }} />
             </>}>
 
-            <section className="section">
-                <div className="container">
-                    <div className={`p-6`}>
-
-                        <nav className="level">
-
-                            <div className="level-left">
-                                <div className="level-item">
-                                    <div>
-                                        <h2 className={`heading ${style.titleS}`}>Registro de Nuevo Docente</h2>
-                                        <p className={`title ${style.subtitleS}`}>Ingresa los datos requeridos para dar de alta a un maestro en el sistema.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="level-right">
-                                <div className="level-item">
-                                    <SearchableInput label={"Editar Docente"}
-                                        placeholder={loadingTeachers ? "Buscando Docentes..." : "Editar Docente..."}
-                                        icon={"fa-solid fa-user-tie"}
-                                        options={listTeachers}
-                                        value={teacher} onChange={setTeacher} />
-                                    <Button texto={"Buscar"} tamaño="pequeño" variante="secundario" onclick={() => { handleSearch(teacher) }} />
-                                </div>
-                            </div>
-
-                        </nav>
-
-                        {dataIsValid ? <></> :
-                            <div className="notification is-danger is-light mb-3">
-                                <i className="fa-solid fa-triangle-exclamation fa-lg mr-4"></i>
-                                Complete todos los campos.
-                            </div>}
-
-                        {!isSend ? <></> :
-                            <div className="notification is-success is-light mb-3">
-                                <i className="fa fa-check fa-lg mr-4"></i>
-                                Docente Registrado Correctamente.
-                            </div>}
-
-                        <div className="columns is-multiline">
-                            <div className="column is-half">
-                                <div className="field">
-                                    <InputField label={"Número de Control:"} placeholder={"X22390045"} type={"text"} icon={"fas fa-id-badge"}
-                                        value={numberControl} onChange={setNumberControl} />
-                                </div>
-                            </div>
-
-                            <div className="column is-half">
-                                <div className="field">
-                                    <InputField label={"Nombre del Docente:"} placeholder={"Jesus Orlando"} type={"text"} icon={"fa-solid fa-user-tie"}
-                                        value={name} onChange={setName} />
-                                </div>
-                            </div>
-
-                            <div className="column is-half">
-                                <div className="field">
-                                    <SearchableInput label={"Carrera:"} placeholder={"SIS"} icon={"fas fa-graduation-cap"} options={CARRERS} value={selectedCareer} onChange={setSelectedCareer} />
-                                </div>
-                            </div>
-
-                            <div className="column is-half">
-                                <div className="field">
-                                    <InputField label={"Contraseña de Acceso:"} placeholder={"Asigna una contraseña segura"} type={"password"}
-                                        icon={"fas fa-lock"}
-                                        iconRight='fa-eye'
-                                        value={password} onChange={setPassword} />
-                                </div>
-                            </div>
+            <div className={style.mainContainer}>
+                <div className={style.formCard}>
+                    
+                    <div className={style.headerSection}>
+                        <div className={style.titleContainer}>
+                            <h2 className={style.titleS}>Registro de Nuevo Docente</h2>
+                            <p className={style.subtitleS}>Ingresa los datos requeridos para dar de alta a un maestro en el sistema.</p>
                         </div>
 
-                        <div className="buttons">
-                            <div className="control">
-                                <Button texto={"Registrar Docente"} iconIzquierdo="fas fa-save" onclick={handleSave} />
-                            </div>
-                            <div className="control">
-                                <Button texto="Canelar" iconIzquierdo="fas fa-x" variante="secundario" onclick={handleCancel} />
-                            </div>
-                            {isEditing ?
-                                <div className="control">
-                                    <Button texto={"Eliminar"} iconIzquierdo="fas fa-trash" variante="primario" onclick={handleDelete} />
-                                </div>
-                                : <></>}
+                        <div className={style.searchSection}>
+                            <SearchableInput 
+                                label={"Editar Docente"}
+                                placeholder={loadingTeachers ? "Buscando Docentes..." : "Buscar para editar..."}
+                                icon={"fa-solid fa-user-tie"}
+                                options={listTeachers}
+                                value={teacher} 
+                                onChange={setTeacher} 
+                            />
+                            <Button 
+                                texto={"Buscar"} 
+                                variante="secundario" 
+                                onclick={() => { handleSearch(teacher) }} 
+                            />
                         </div>
-
                     </div>
+
+                    {dataIsValid ? <></> :
+                        <div className="notification is-danger is-light mb-3">
+                            <i className="fa-solid fa-triangle-exclamation fa-lg mr-4"></i>
+                            Complete todos los campos.
+                        </div>}
+
+                    {!isSend ? <></> :
+                        <div className="notification is-success is-light mb-3">
+                            <i className="fa fa-check fa-lg mr-4"></i>
+                            Docente Registrado Correctamente.
+                        </div>}
+
+                    <div className={style.formGrid}>
+                        <InputField 
+                            label={"Número de Control:"} 
+                            placeholder={"X22390045"} 
+                            type={"text"} 
+                            icon={"fas fa-id-badge"}
+                            value={numberControl} 
+                            onChange={setNumberControl} 
+                        />
+                        
+                        <InputField 
+                            label={"Nombre del Docente:"} 
+                            placeholder={"Jesus Orlando"} 
+                            type={"text"} 
+                            icon={"fa-solid fa-user-tie"}
+                            value={name} 
+                            onChange={setName} 
+                        />
+                        
+                        <SearchableInput 
+                            label={"Carrera:"} 
+                            placeholder={"Seleccione o escriba..."} 
+                            icon={"fas fa-graduation-cap"} 
+                            options={CARRERS} 
+                            value={selectedCareer} 
+                            onChange={setSelectedCareer} 
+                        />
+                        
+                        <InputField 
+                            label={"Contraseña de Acceso:"} 
+                            placeholder={"Asigna una contraseña segura"} 
+                            type={"password"}
+                            icon={"fas fa-lock"}
+                            iconRight='fa-eye'
+                            value={password} 
+                            onChange={setPassword} 
+                        />
+                    </div>
+
+                    <div className={style.actionsContainer}>
+                        {isEditing ?
+                            <Button 
+                                texto={"Eliminar"} 
+                                iconIzquierdo="fas fa-trash" 
+                                variante="inverso" 
+                                onclick={handleDelete} 
+                            />
+                            : <></>}
+                        <Button 
+                            texto="Cancelar" 
+                            iconIzquierdo="fas fa-x" 
+                            variante="secundario" 
+                            onclick={handleCancel} 
+                        />
+                        <Button 
+                            texto={isEditing ? "Guardar Cambios" : "Registrar Docente"} 
+                            iconIzquierdo="fas fa-save" 
+                            variante="primario" 
+                            onclick={handleSave} 
+                        />
+                    </div>
+
                 </div>
-            </section>
+            </div>
 
         </Structure >
     );

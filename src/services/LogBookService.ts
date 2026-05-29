@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export interface LogBookData {
     fecha: string;
@@ -45,14 +45,34 @@ export interface LogBookRecord{
 }
 
 
-const API_URL = 'https://791q1zh4-3000.usw3.devtunnels.ms';
+const apiClient = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+    timeout: 10000, // Si el backend no responde en 10 segundos, se cancela todo
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+        // Atrapamos solo el error de cuando el servidor está apagado
+        if (error.code === 'ERR_NETWORK') {
+            console.warn("No se pudo conectar con el servidor.");
+        } else {
+            console.error(`Error en la API: ${error.response?.status}`, error.message);
+        }
+
+        return Promise.reject(error);
+    }
+);
 
 export const recordActivity = async (datos: LogBookData): Promise<ResponseLogBook> => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.post<ResponseLogBook>(
-            `${API_URL}/api/bitacora/registrar`,
+        const response = await apiClient.post<ResponseLogBook>(
+            `/api/bitacora/registrar`,
             datos,
             {
                 headers: {
@@ -77,8 +97,8 @@ export const getLogBookForDate = async (fecha: string): Promise<LogBookRecord[]>
     try{
         const token = localStorage.getItem('token');
 
-        const response = await axios.get<LogBookRecord[] | null>(
-            `${API_URL}/api/bitacora/${fecha}`,
+        const response = await apiClient.get<LogBookRecord[] | null>(
+            `/api/bitacora/${fecha}`,
             {
                 headers:{
                     'Authorization':`Bearer ${token}`

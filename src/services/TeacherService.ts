@@ -8,7 +8,7 @@ export interface IMaestrosRespuesta {
 // Instancia de axios, con parametros predefinidos
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
-    timeout: 5000, // Si el backend no responde en 5 segundos, se cancela todo
+    timeout: 10000, // Si el backend no responde en 5 segundos, se cancela todo
     headers: {
         'Content-Type': 'application/json'
     }

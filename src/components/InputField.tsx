@@ -27,8 +27,21 @@ export default function InputField({ label, placeholder, type, icon, iconRight, 
         <div className={`field  ${Styles.field}`}>
             <label className={`label ${Styles.label}`}>{label}</label>
             <div className={`control has-icons-left ${iconRight ? 'has-icons-right' : ''}`}>
-                <input className={`input ${Styles.input}`} type={inputType} placeholder={placeholder}
-                    value={value} onChange={(e)=> onChange && onChange(e.target.value)}
+                <input 
+                    className={`input ${Styles.input}`} 
+                    type={inputType} 
+                    placeholder={placeholder}
+                    value={value} 
+                    onChange={(e)=> onChange && onChange(e.target.value)}
+                    onClick={(e) => {
+                        if (type === 'time' || type === 'date') {
+                            try {
+                                (e.target as HTMLInputElement).showPicker();
+                            } catch (err) {
+                                // showPicker is not supported in some older browsers
+                            }
+                        }
+                    }}
                 />
                 <span className={`icon is-left ${Styles.iconLeft}`}>
                     <i className={`fas ${icon}`}></i>
