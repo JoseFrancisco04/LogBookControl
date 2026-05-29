@@ -33,6 +33,7 @@ export default ({ graphData, dataX, dataY, nameBar }: Props) => {
                     <Bar dataKey={dataY} name={nameBar} radius={[6, 6, 0, 0]} maxBarSize={60}>
                         {graphData.map((entry, index) => {
                             const COLORES = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28DFF', '#FF6B6B'];
+                            console.log(entry);
                             return <Cell key={`cell-${index}`} fill={COLORES[index % COLORES.length]} />;
                         })}
                     </Bar>

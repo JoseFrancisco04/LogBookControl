@@ -28,7 +28,7 @@ const COLORES = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
  * @param {Props} props - Propiedades para configurar la gráfica.
  * @returns Elemento JSX que contiene la gráfica de pastel responsiva.
  */
-export default ({ data, keyName, keyValue }: Props) => {
+export default ({ data, keyValue }: Props) => {
     return (
         // ResponsiveContainer permite que el gráfico se adapte al tamaño del div padre
         <div style={{ width: '100%', height: 400 }}>
@@ -45,18 +45,20 @@ export default ({ data, keyName, keyValue }: Props) => {
                         dataKey={keyValue}
                         stroke="none"
                     >
-                        {data.map((entry, index) => (
-                            <Cell 
-                                key={`cell-${index}`} 
-                                fill={COLORES[index % COLORES.length]} 
+                        {data.map((entry, index) => {
+                            console.log(entry);
+                            return <Cell
+                                key={`cell-${index}`}
+                                fill={COLORES[index % COLORES.length]}
                                 stroke="var(--color-fondo)"
                                 strokeWidth={2}
                             />
-                        ))}
+                        }
+                        )}
                     </Pie>
 
                     {/* Tooltip con estilos personalizados para verse premium */}
-                    <Tooltip 
+                    <Tooltip
                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                         itemStyle={{ color: 'var(--color-fuente)', fontWeight: 600 }}
                     />

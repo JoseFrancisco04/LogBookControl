@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./LogoutModal.module.css";
 import Button from "./Button";
 import InputField from "./InputField";
 import { logout } from "../services/AuthService";
-import { replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface LogoutModalProps {
     isOpen: boolean;
