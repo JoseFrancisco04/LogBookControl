@@ -49,6 +49,12 @@ function parseData(data: ISchedule): ISchedulePayload {
     };
 };
 
+/**
+ * Obtiene el horario completo asignado a un laboratorio específico.
+ * 
+ * @param {string} labNumber - El identificador o número del laboratorio (ej. '1', '2', 'A').
+ * @returns {Promise<ISchedule[]>} Arreglo con todas las clases/horarios asignados a ese laboratorio.
+ */
 export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> => {
     try {
         const response = await apiClient.get<ISchedule[]>(`/api/horarios/${labNumber}`);
@@ -58,6 +64,13 @@ export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> =
     }
 }
 
+/**
+ * Guarda o actualiza un bloque de horarios en la base de datos.
+ * 
+ * @param {ISchedule[]} schedule - Arreglo de horarios a guardar. Se parsean automáticamente al formato requerido por el backend.
+ * @returns {Promise<void>} 
+ * @throws {Error} Si la operación falla.
+ */
 export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
     console.log(schedule)
     try {
@@ -73,6 +86,13 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
     }
 }
 
+/**
+ * Elimina un registro de horario o clase específico.
+ * 
+ * @param {ISchedule} schedule - El objeto de la clase a eliminar.
+ * @returns {Promise<any>} Confirmación de eliminación.
+ * @throws {Error} Si falla la petición de eliminación.
+ */
 export const deleteSchedule = async (schedule: ISchedule) => {
     const dataToDelete: ISchedulePayload = parseData(schedule);
     console.log("deleteShcedule", dataToDelete)

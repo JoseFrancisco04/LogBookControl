@@ -44,6 +44,13 @@ apiClient.interceptors.response.use(
     }
 );
 
+/**
+ * Autentica a un usuario en el sistema utilizando su número de control y contraseña.
+ * 
+ * @param {LoginCredencials} credencials - Objeto con el número de control y la contraseña del usuario.
+ * @returns {Promise<AuthResponse>} Objeto con la información del usuario autenticado y su token.
+ * @throws {Error} Si las credenciales son incorrectas o falla la comunicación.
+ */
 export const login = async (credencials: LoginCredencials): Promise<AuthResponse> => {
     try {
         const response = await apiClient.post<AuthResponse>(`/api/login`, credencials);
@@ -59,6 +66,13 @@ export const login = async (credencials: LoginCredencials): Promise<AuthResponse
 };
 
 
+/**
+ * Cierra la sesión del usuario actual en el servidor.
+ * 
+ * @param {LoginCredencials} credencials - Credenciales necesarias para confirmar el cierre de sesión.
+ * @returns {Promise<AuthResponseLogout>} Respuesta de confirmación del cierre de sesión.
+ * @throws {Error} Si falla el proceso de cerrado de sesión.
+ */
 export const logout = async (credencials:LoginCredencials): Promise <AuthResponseLogout> =>{
     try{
         const response = await apiClient.post<AuthResponseLogout>(`/api/logout`, credencials);

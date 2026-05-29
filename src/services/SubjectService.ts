@@ -27,6 +27,11 @@ apiClient.interceptors.response.use(
     }
 );
 
+/**
+ * Obtiene una lista con los nombres de todas las materias registradas.
+ * 
+ * @returns {Promise<string[]>} Arreglo de strings con los nombres de las materias. Retorna arreglo vacío en caso de error.
+ */
 export const obtenerMaterias =  async (): Promise<string[]> =>{
  
     try{

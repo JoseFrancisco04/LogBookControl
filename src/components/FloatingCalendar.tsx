@@ -8,8 +8,12 @@ interface Props {
 }
 
 /**
- * @returns Un calendario flotante
- * @description Rediseñado para encajar con el diseño del sistema
+ * Componente de calendario flotante tipo Dropdown.
+ * Permite al usuario seleccionar una fecha de manera interactiva.
+ * Rediseñado para encajar con el diseño del sistema (UI/UX).
+ * 
+ * @param {Props} props - Propiedades: label del input, fecha seleccionada y callback al cambiar fecha.
+ * @returns {JSX.Element} Un input que despliega un calendario interactivo al hacer clic.
  */
 export default function FloatingCalendar({ label, selectedDate, onDateSelect }: Props) {
     const [isOpen, setIsOpen] = useState(false);

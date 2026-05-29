@@ -6,28 +6,41 @@ import style from "./ModalAdmin.module.css"
 import SearchableInput from "./SearchableInput";
 import { deleteSchedule, saveScheduleData } from "../services/ScheduleService";
 
+/**
+ * Propiedades esperadas para el componente ModalAdmin.
+ */
 interface Props {
-    // Hooks de funcionalidad
-    // Abrir y cerrar el modal
+    /** Hook: Estado para indicar si el modal está abierto o cerrado */
     isModalOpen: boolean;
+    /** Hook: Función para cambiar el estado de apertura del modal */
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-    // Key del modal
+    /** Identificador único de la celda seleccionada (ej. 'Lunes-08-09') */
     selectedCell: CellKey | null;
 
+    /** Nombre o número del laboratorio actual */
     laboratory: string;
 
-    // Guardado de datos
+    /** Objeto que almacena todo el horario asignado por celdas */
     scheduleData: Record<CellKey, ISchedule>;
+    /** Función para actualizar el estado global del horario */
     setScheduleData: React.Dispatch<React.SetStateAction<Record<CellKey, ISchedule>>>;
 
-    // Maestros
+    /** Lista de nombres de maestros para el autocompletado */
     listTeachers: string[];
+    /** Indicador visual de si los maestros están cargando desde la API */
     loadingTeachers: boolean;
 }
 
 type CellKey = string;
 
+/**
+ * Modal administrativo para agregar, editar o eliminar una clase del horario.
+ * Muestra un formulario para asignar una materia, maestro y grupo a un bloque de horario.
+ * 
+ * @param {Props} props - Funciones y estados compartidos desde el componente padre.
+ * @returns Elemento JSX que renderiza el Modal flotante sobre la pantalla.
+ */
 export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, scheduleData, setScheduleData, listTeachers, loadingTeachers }: Props) => {
 
     // Hook con los datos del form (solo materia, maestro y grupo_id
