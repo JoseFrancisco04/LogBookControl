@@ -1,0 +1,206 @@
+
+.mainContainer{
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 1;
+}
+
+
+.headerCard{
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    box-shadow: var(--sombra-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(0,0,0,0.05);
+
+}
+
+
+.logo{
+    width: 50px;
+    text-align: center;
+    padding: 0.2rem;
+}
+
+.headerCenter{
+    flex-grow: 1;
+    text-align: left;
+    padding: 0 2rem;
+}
+
+.title{
+    color: var(--color-primario);
+    font-size: var(--fuente-mediana);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.division{
+    border-top: 1px solid var(--color-neutral-2);
+    padding-top:1rem ;
+}
+
+.subtitle{
+    color: var(--color-fuente);
+    font-size: var(--fuente-pequeña);
+}
+
+.headerRight{
+    border-left: 1px solid var(--color-neutral-2);
+    padding-left: 1.5rem;
+    font-size: var(--fuente-pequeña);
+    text-align: left;
+    min-width: 180px;
+}
+
+.headerRight p{
+    margin-bottom: 0.25rem;
+    color: var(--color-fuente);
+}
+
+.sectionTitleContainer{
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.titleGroup{
+    display: flex;
+    flex-direction: column;
+    gap:0.25rem;
+}
+
+.protocolText{
+    color: var(--color-secundario);
+    font-size: var(--fuente-pequeña) ;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.mainHadding{
+    color: var(--color-primario);
+    font-size: var(--fuente-grande);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+}
+
+.tableCard{
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgb(0,0,0,0.05);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.tableResponsive{
+    width: 100%;
+    overflow-x:auto;
+}
+
+.modernTable{
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.modernTable th{
+    background-color: var(--color-neutral-1);
+    color: var(--color-primario);
+    font-size: var(--fuente-pequeña);
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-neutral-2);
+}
+
+.modernTable td{
+    padding: 1rem 1.5rem;
+    color: var(--color-fuente);
+    font-size: var(--fuente-pequeña);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: var(--transicion-suave);
+}
+
+.modernTable tbody tr:hover td{
+    background-color: #F8FAFC;
+}
+
+.modernTable tbody tr:last-child td{
+    border-bottom: none;
+}
+
+.emptyState{
+    text-align: center;
+    padding: 4rem 2rem !important;
+    color: var(--color-neutral-3) !important;
+    font-size: var(--fuente-normal);
+}
+
+.emptyState i{
+    font-size: 2.5rem;
+    color: var(--color-neutral-2);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+
+.skeletonBlock{
+    background: #e2e8f0;
+    background: linear-gradient(
+        90deg,
+        rgba(226,232,240,1) 25%,
+        rgba(241,245,249,1) 50%,
+        rgba(226,232,240,1) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+    height: 1.25rem;
+    width: 100%;
+}
+
+.skeletonBlock.short {width: 50%;}
+.skeletonBlock.medium {width: 75%;}
+.skeletonBlock.title {height: 2rem; width: 60%;}
+.skeletonBlock.button {height: 2.5rem; border-radius: 8px;}
+
+@keyframes shimmer {
+    0% {background-position: 200% 0;}
+    100% {background-position: -200% 0;}
+}
+
+@media (max-width: 768px){
+    .mainContainer{
+        padding: 1rem;
+    }
+
+    .sectionTitleContainer{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .titleGroup{
+        width: 100%;
+    }
+
+    .sectionTitleContainer > div:last-child,
+    .sectionTitleContainer button{
+        width: 100%;
+    }
+
+    .mainHadding{
+        font-size: 1.75rem;
+    }
+}

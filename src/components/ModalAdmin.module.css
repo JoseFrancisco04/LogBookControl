@@ -1,0 +1,12 @@
+.cardHead {
+    background-color: var(--color-primario);
+}
+
+.cardBody {
+    background-color: var(--color-fondo);
+    border-block-end: 2px solid var(--color-neutral-2);
+}
+
+.cardFoot {
+    background-color: var(--color-fondo);
+}

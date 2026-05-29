@@ -1,0 +1,61 @@
+
+.field{
+    margin-bottom: 2rem;
+    
+}
+
+.label{
+    color: var(--color-fuente);
+    font-size: var(--fuente-pequeña);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.input{
+    background-color: var(--color-fondo);
+    border: 1px solid var(--color-neutral-2);
+    color: var(--color-fuente);
+    border-radius: 6px;
+    height: 3rem;
+    transition: var(--transicion-suave);
+    box-shadow: none;
+}
+
+.input::placeholder {
+    color: var(--color-neutral-3); 
+    opacity: 0.7;  
+                           
+}
+
+.input:focus{
+    border-color: var(--color-primario) !important;
+    /*color: var(--color-fuente) !important;*/
+    box-shadow: 0 0 0 3px rgba(15, 42, 61, 0.1) !important;
+    /*background-color: var(--color-fondo);*/
+    outline: none;
+}
+
+.iconLeft{
+    color: var(--color-neutral-3) !important;
+    height: 3rem !important;
+}
+
+.iconRight{
+    color: var(--color-neutral-3) !important;
+    height: 3rem !important;
+}
+
+.input:focus ~ .iconLeft, .input:focus ~ .iconRight{
+    color: var(--color-primario) !important;
+}
+
+.iconRight {
+    pointer-events: auto !important;
+    cursor: pointer;
+    transition: var(--transicion-suave);
+}
+
+.iconRight:hover {
+    color: var(--color-secundario) !important;
+}

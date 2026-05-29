@@ -1,0 +1,106 @@
+.mainContainer {
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.filterCard {
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 1500px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-fuente);
+    margin-bottom: 0.5rem;
+}
+
+.gridFilters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    align-items: end;
+}
+
+.gridFilters > * {
+    margin-bottom: 0 !important;
+}
+
+.actionsContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.chartsContainer {
+    width: 100%;
+    max-width: 1500px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.chartCard {
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.05);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+}
+
+.emptyState {
+    width: 100%;
+    max-width: 1500px;
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+@media (max-width: 1024px) {
+    .gridFilters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .chartsContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContainer {
+        padding: 1rem;
+    }
+    .filterCard, .chartCard {
+        padding: 1.5rem;
+    }
+    .gridFilters {
+        grid-template-columns: 1fr;
+    }
+    .actionsContainer {
+        justify-content: center;
+    }
+}

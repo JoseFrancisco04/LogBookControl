@@ -1,0 +1,58 @@
+.columLaboratory {
+    color: blue;
+}
+
+.cardLaboratory {
+    background-color: var(--color-fondo);
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    transition: var(--transicion-suave, all 0.3s ease);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.cardLaboratory::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-primario);
+    z-index: -1;
+    clip-path: circle(0% at 50% 50%); 
+    transition: clip-path 0.6s ease-out;
+}
+
+
+.cardLaboratory:hover::before {
+    clip-path: circle(150% at 50% 50%); 
+}
+
+
+.cardLaboratory:hover {
+    transform: scale(1.09);
+    box-shadow: 8px 8px 20px rgba(0,0,0,0.4);
+}
+
+
+.cardLaboratory:hover :global(.title),
+.cardLaboratory:hover :global(.subtitle) {
+    color: var(--color-fondo) !important;
+}
+
+.cardLaboratory:hover :global(.icon) i {
+    color: var(--color-fondo) !important;
+}
+
+.cardLaboratory:hover :global(.media-left) {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.iconBackground {
+    background-color: #92beff98;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}

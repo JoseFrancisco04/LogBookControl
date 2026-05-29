@@ -1,0 +1,12 @@
+.tableAdmin{
+     background-color: var(--color-fondo);
+}
+
+.fontColor{
+    color: var(--color-fuente) !important;
+}
+
+.cell{
+   cursor: pointer;
+   min-width: 120px; 
+}
