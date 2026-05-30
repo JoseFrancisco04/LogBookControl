@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import styles from "./ConfirmModal.module.css";
 import Button from "./Button";
 import InputField from "./InputField";

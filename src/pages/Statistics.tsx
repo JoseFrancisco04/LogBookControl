@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Structure from "../components/Structure";
 import { useState, useEffect } from "react";
-import { getHoursPerCareer, getHoursPerLaboratory, getHoursPerSubject, getHoursPerTeacher, getLaboratoryDetails } from "../services/StatisticsService";
+import { getHoursPerCareer, getHoursPerSubject, getHoursPerTeacher, getLaboratoryDetails } from "../services/StatisticsService";
 import FloatingCalendar from "../components/FloatingCalendar";
 import BarGraph from "../components/BarGraph";
 import SearchableInput from "../components/SearchableInput";
