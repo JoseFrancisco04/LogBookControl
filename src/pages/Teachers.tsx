@@ -209,7 +209,7 @@ export default () => {
                             <Button 
                                 texto={"Eliminar"} 
                                 iconIzquierdo="fas fa-trash" 
-                                variante="inverso" 
+                                variante="secundario" 
                                 onclick={handleDelete} 
                             />
                             : <></>}
