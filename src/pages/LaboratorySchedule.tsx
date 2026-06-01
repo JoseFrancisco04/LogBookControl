@@ -42,7 +42,7 @@ export const LaboratorySchedule = () => {
     return (
         <Structure title='HORARIOS' footerText={`© 2026 Instituto Tecnológico Superior de Huauchinango | Centro de Cómputo | Laboratorio ${labNumber}`}
             navbarActions={<>
-                <Button texto="Ver Horarios" variante="inverso" icono="fas fa-map-signs" onclick={() => navigate("/")}></Button>
+                <Button texto="Ver Horarios" variante="inverso" icono="fas fa-map-signs" onclick={() => navigate(-1)}></Button>
             </>}>
             <section className={`section`}>
                 <div className={`container`}>
@@ -54,10 +54,10 @@ export const LaboratorySchedule = () => {
 
                             <div className={`card mb-6 has-background-info-light ${styles.cardBorder}`}>
                                 <div className={`card-content ${styles.cardContent}`}>
-                                    <div className={`columns is-vcentered is-mobile`}>
+                                    <div className={`columns is-vcentered `}>
 
                                         {/* Clase Actual */}
-                                        <div className={`column`}>
+                                        <div className={`column ${styles.currentCol}`}>
                                             {/* Agregar el if para cuando no hayan clases */}
                                             {classInProgress ? <>
                                                 <p className={`heading has-text-weight-bold ${styles.title}`}>En Curso ({`${classInProgress?.hora_inicio.slice(0, -3)} - ${classInProgress?.hora_fin.slice(0, -3)}`})</p>
@@ -72,7 +72,7 @@ export const LaboratorySchedule = () => {
                                         </div>
 
                                         {/* Clase siguiente */}
-                                        <div className={`column is-narrow has-text-right is-one-third`} style={{ borderLeft: "1px solid var(--color-secundario)" }}>
+                                        <div className={`column is-narrow has-text-right is-one-third ${styles.nextCol}`}>
                                             <p className={`heading`} style={{ color: "var(--color-fuente)" }}>Siguiente</p>
                                             <p className={`subtitle is-6 mb-1`} style={{ color: "var(--color-fuente)" }}>{nextClass?.materia}</p>
                                             <p className={`is-size-7`} style={{ color: "var(--color-fuente)" }}>{
