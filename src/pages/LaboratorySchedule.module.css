@@ -9,3 +9,27 @@
 .title{
     color: var(--color-fuente);
 }
+
+.nextCol{
+    border-left: 1px solid var(--color-secundario);
+}
+
+@media (max-width: 768px){
+    .cardContent{
+        padding: 1.5rem 1rem;
+    }
+
+    .currentCol{
+        text-align: center;
+        padding-bottom: 1.5rem;
+    }
+
+    .nextCol{
+        border-left: none;
+        border-top: 1px solid var(--color-secundario);
+        text-align: center !important;
+        padding-top: 1.5rem;
+        width: 100%;
+    }
+
+}

@@ -9,7 +9,7 @@ interface Props {
 
 export default ({ laboratoryNumber, classInProgress, onClick }: Props) => {
     return (
-        <div className={`column is-4 ${styles.columLaboratory}`}>
+        <div className={`column is-12-mobile is-6-tablet is-5-desktop ${styles.columLaboratory}`}>
             <div className={`card ${styles.cardLaboratory}`} onClick={onClick}>
                 <div className={`card-content ${styles.cardContent}`}>
                     <div className="media">

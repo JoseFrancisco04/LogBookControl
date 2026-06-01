@@ -56,3 +56,19 @@
     border-radius: 50px;
     transition: all 0.3s ease;
 }
+
+@media (max-width: 768px){
+    .cardContent{
+        padding: 1.25rem 1rem;
+    }
+
+    .cardLaboratory :global(.title){
+        font-size: 1.25rem !important;
+    }
+
+    .cardLaboratory :global(.subtitle){
+        font-size: 0.9rem !important;
+
+    }
+
+}
