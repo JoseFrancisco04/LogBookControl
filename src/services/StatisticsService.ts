@@ -1,33 +1,10 @@
-import axios, { AxiosError } from "axios";
+import apiClient from "./ApiClient";
 
 interface DateRange {
     fecha_inicio: string;
     fecha_fin: string;
     laboratorio?: string;
 }
-
-// Instancia de axios, con parametros predefinidos
-const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 10000, // Si el backend no responde en 5 segundos, se cancela todo
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
-
-apiClient.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-        // Atrapamos solo el error de cuando el servidor está apagado
-        if (error.code === 'ERR_NETWORK') {
-            console.warn("No se pudo conectar con el servidor.");
-        } else {
-            console.error(`Error en la API: ${error.response?.status}`, error.message);
-        }
-
-        return Promise.reject(error);
-    }
-);
 
 /**
  * Obtiene el total de horas utilizadas agrupadas por carrera dentro de un rango de fechas.

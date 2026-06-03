@@ -108,13 +108,13 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
             const scheduleArray = await parseDataToSave(selectedCell);
             await saveScheduleData(scheduleArray);
 
-            showToast("Clase Agregada","success");
-            await setScheduleData((prev) => ({
+            showToast("Clase Agregada", "success");
+            setScheduleData((prev) => ({
                 ...prev,
-                [selectedCell]: formData,
+                [selectedCell]: scheduleArray[0],
             }));
 
-            setIsModalOpen(false); // cierra el modal
+            closeModal();
         } catch (error) {
             console.error(error);
             showToast("Error al Agregar la Clase", "danger");
@@ -145,7 +145,6 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
 
     const handleDelete = async () => {
         if (!selectedCell || modalIsEmpty()) return;
-
         try {
             setIsSending(true);
             const dataCell = scheduleData[selectedCell];
@@ -154,6 +153,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
             // Lo eliminamos del array local si se elimina del remoto
             delete scheduleData[selectedCell];
             setScheduleData(scheduleData);
+            clearFormData();
             setIsModalOpen(false);
         } catch (error) {
             console.error(error);

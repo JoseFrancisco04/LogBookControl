@@ -116,6 +116,9 @@ export default () => {
                 showToast("Docente Eliminado Correctamente", "success");
                 handleCancel();
                 cargarMaestros();
+            }).catch((error) => {
+                console.error(error);
+                showToast("Docente Relacionado, No se Puede Eliminar","danger");
             });
         }
     }
@@ -174,7 +177,10 @@ export default () => {
                             type={"text"}
                             icon={"fas fa-id-badge"}
                             value={numberControl}
-                            onChange={(value) => setNumberControl(value.toUpperCase())}
+                            // No se puede editar el número de control
+                            onChange={isEditing ? () => { } :
+                                (value) => setNumberControl(value.toUpperCase())
+                            }
                         />
 
                         <InputField
