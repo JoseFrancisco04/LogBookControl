@@ -6,11 +6,15 @@ import SearchableInput from "../components/SearchableInput";
 import { useEffect, useState } from "react";
 import { deleteTeacher, getTeachersData, obtenerNombresMaestros, saveTeacher } from "../services/TeacherService";
 import style from "./Teachers.module.css"
+import Toast from "../components/Toast";
 
 export default () => {
     const CARRERS = ["IND", "INF", "SIS", "ADM", "ELE", "MEC"];
 
     const navigate = useNavigate();
+
+    // Hook para saber si está editando o no
+    const [isEditing, setIsEditing] = useState(false);
 
     // Hooks de "Editar docente"
     const [listTeachers, setListTeachers] = useState<string[]>([]);
@@ -23,12 +27,15 @@ export default () => {
     const [selectedCareer, setSelectedCareer] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    // Hooks de validación
-    const [dataIsValid, setDataIsValid] = useState(true);
+    // Hooks del toast
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState<"success" | "danger" | "warning">("success");
 
-    const [isEditing, setIsEditing] = useState(false);
-
-    const [isSend, setIsSend] = useState(false);
+    // Ayudante para mostrar toast
+    const showToast = (message: string, type: "success" | "danger" | "warning") => {
+        setToastMessage(message);
+        setToastType(type);
+    };
 
     const cargarMaestros = async () => {
         const names = await obtenerNombresMaestros();
@@ -51,8 +58,6 @@ export default () => {
 
     const handleSave = () => {
         if (!isFormEmty()) {
-            setDataIsValid(true);
-            // Preguntar si se puede cambiar el número de control
             saveTeacher({
                 num_control: numberControl,
                 nombre_completo: name,
@@ -61,14 +66,18 @@ export default () => {
             })
                 .then((res) => {
                     if (res.ok) {
-                        setIsSend(true);
+                        showToast("Docente Registrado Correctamente", "success");
                         handleCancel();
                         cargarMaestros();
                     }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showToast("Error al Registrar Docente", "danger");
                 });
         }
         else
-            setDataIsValid(false);
+            showToast("Datos invalidos", "danger");
     }
 
     const handleCancel = () => {
@@ -76,9 +85,7 @@ export default () => {
         setName("");
         setSelectedCareer("");
         setPassword("");
-        setDataIsValid(true);
         setIsEditing(false);
-        setIsSend(false);
     }
 
     const handleSearch = async (value: string) => {
@@ -88,7 +95,7 @@ export default () => {
         const teacher = teachers.find((t) => t.nombre_completo == value);
         if (!teacher) return;
 
-        console.log(teacher.carrera)
+        //console.log(teacher.carrera)
         setNumberControl(teacher.num_control);
         setName(teacher.nombre_completo);
         setSelectedCareer(teacher.carrera);
@@ -129,7 +136,7 @@ export default () => {
 
             <div className={style.mainContainer}>
                 <div className={style.formCard}>
-                    
+
                     <div className={style.headerSection}>
                         <div className={style.titleContainer}>
                             <h2 className={style.titleS}>Registro de Nuevo Docente</h2>
@@ -137,93 +144,87 @@ export default () => {
                         </div>
 
                         <div className={style.searchSection}>
-                            <SearchableInput 
+                            <SearchableInput
                                 label={"Editar Docente"}
                                 placeholder={loadingTeachers ? "Buscando Docentes..." : "Buscar para editar..."}
                                 icon={"fa-solid fa-user-tie"}
                                 options={listTeachers}
-                                value={teacher} 
-                                onChange={setTeacher} 
+                                value={teacher}
+                                onChange={setTeacher}
                             />
-                            <Button 
-                                texto={"Buscar"} 
-                                variante="secundario" 
-                                onclick={() => { handleSearch(teacher) }} 
+                            <Button
+                                texto={"Buscar"}
+                                variante="secundario"
+                                onclick={() => { handleSearch(teacher) }}
                             />
                         </div>
                     </div>
 
-                    {dataIsValid ? <></> :
-                        <div className="notification is-danger is-light mb-3">
-                            <i className="fa-solid fa-triangle-exclamation fa-lg mr-4"></i>
-                            Complete todos los campos.
-                        </div>}
-
-                    {!isSend ? <></> :
-                        <div className="notification is-success is-light mb-3">
-                            <i className="fa fa-check fa-lg mr-4"></i>
-                            Docente Registrado Correctamente.
-                        </div>}
+                    <Toast
+                        message={toastMessage}
+                        type={toastType}
+                        onClose={() => setToastMessage("")}
+                    />
 
                     <div className={style.formGrid}>
-                        <InputField 
-                            label={"Número de Control:"} 
-                            placeholder={"X22390045"} 
-                            type={"text"} 
+                        <InputField
+                            label={"Número de Control:"}
+                            placeholder={"X22390045"}
+                            type={"text"}
                             icon={"fas fa-id-badge"}
-                            value={numberControl} 
-                            onChange={setNumberControl} 
+                            value={numberControl}
+                            onChange={setNumberControl}
                         />
-                        
-                        <InputField 
-                            label={"Nombre del Docente:"} 
-                            placeholder={"Jesus Orlando"} 
-                            type={"text"} 
+
+                        <InputField
+                            label={"Nombre del Docente:"}
+                            placeholder={"Jesus Orlando"}
+                            type={"text"}
                             icon={"fa-solid fa-user-tie"}
-                            value={name} 
-                            onChange={setName} 
+                            value={name}
+                            onChange={setName}
                         />
-                        
-                        <SearchableInput 
-                            label={"Carrera:"} 
-                            placeholder={"Seleccione o escriba..."} 
-                            icon={"fas fa-graduation-cap"} 
-                            options={CARRERS} 
-                            value={selectedCareer} 
-                            onChange={setSelectedCareer} 
+
+                        <SearchableInput
+                            label={"Carrera:"}
+                            placeholder={"Seleccione o escriba..."}
+                            icon={"fas fa-graduation-cap"}
+                            options={CARRERS}
+                            value={selectedCareer}
+                            onChange={setSelectedCareer}
                         />
-                        
-                        <InputField 
-                            label={"Contraseña de Acceso:"} 
-                            placeholder={"Asigna una contraseña segura"} 
+
+                        <InputField
+                            label={"Contraseña de Acceso:"}
+                            placeholder={"Asigna una contraseña segura"}
                             type={"password"}
                             icon={"fas fa-lock"}
                             iconRight='fa-eye'
-                            value={password} 
-                            onChange={setPassword} 
+                            value={password}
+                            onChange={setPassword}
                         />
                     </div>
 
                     <div className={style.actionsContainer}>
                         {isEditing ?
-                            <Button 
-                                texto={"Eliminar"} 
-                                iconIzquierdo="fas fa-trash" 
-                                variante="secundario" 
-                                onclick={handleDelete} 
+                            <Button
+                                texto={"Eliminar"}
+                                iconIzquierdo="fas fa-trash"
+                                variante="secundario"
+                                onclick={handleDelete}
                             />
                             : <></>}
-                        <Button 
-                            texto="Cancelar" 
-                            iconIzquierdo="fas fa-x" 
-                            variante="secundario" 
-                            onclick={handleCancel} 
+                        <Button
+                            texto="Cancelar"
+                            iconIzquierdo="fas fa-x"
+                            variante="secundario"
+                            onclick={handleCancel}
                         />
-                        <Button 
-                            texto={isEditing ? "Guardar Cambios" : "Registrar Docente"} 
-                            iconIzquierdo="fas fa-save" 
-                            variante="primario" 
-                            onclick={handleSave} 
+                        <Button
+                            texto={isEditing ? "Guardar Cambios" : "Registrar Docente"}
+                            iconIzquierdo="fas fa-save"
+                            variante="primario"
+                            onclick={handleSave}
                         />
                     </div>
 
