@@ -1,5 +1,5 @@
-import axios, { AxiosError } from "axios";
 import type { ISchedule } from "../models/ISchedule";
+import apiClient from "./ApiClient";
 
 // Modelo de como enviamos la info
 interface ISchedulePayload {
@@ -12,30 +12,6 @@ interface ISchedulePayload {
     laboratorio: number;
     grupo_id: string;
 }
-
-// Instancia de axios, con parametros predefinidos
-const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 5000, // Si el backend no responde en 5 segundos, se cancela todo
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-});
-
-apiClient.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-        // Atrapamos solo el error de cuando el servidor está apagado
-        if (error.code === 'ERR_NETWORK') {
-            console.warn("No se pudo conectar con el servidor.");
-        } else {
-            console.error(`Error en la API: ${error.response?.status}`, error.message);
-        }
-
-        return Promise.reject(error);
-    }
-);
 
 function parseData(data: ISchedule): ISchedulePayload {
     return {
@@ -75,7 +51,7 @@ export const getScheduleFrom = async (labNumber: number): Promise<ISchedule[]> =
  * @throws {Error} Si la operación falla.
  */
 export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
-    console.log("Data to Save:" ,JSON.stringify(schedule))
+    //console.log("Data to Save:", JSON.stringify(schedule))
     try {
         const dataSend: ISchedulePayload[] = schedule.map(parseData);
 
@@ -83,11 +59,8 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
             `/api/horarios/registrar_horario`,
             dataSend
         );
-        
-        const res = response.data;
-        console.log("Response Submit:", res)
 
-        return res;
+        return response.data;
     } catch (error) {
         throw new Error("Error al guardar el horario");
     }
@@ -101,8 +74,9 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
  * @throws {Error} Si falla la petición de eliminación.
  */
 export const deleteSchedule = async (schedule: ISchedule) => {
+    //console.log(schedule)
     const dataToDelete: ISchedulePayload = parseData(schedule);
-    console.log("deleteShcedule", dataToDelete)
+    //console.log("deleteShcedule", dataToDelete)
     try {
         const response = await apiClient.delete(
             `/api/horarios/eliminar`,
