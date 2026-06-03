@@ -30,15 +30,15 @@ export default function Toast({ message, type, onClose }: Props) {
         }
     }
 
-    // Cerrar la notificación después de 5 segundos
+    // Cerrar la notificación después de n segundos
     useEffect(() => {
         // Si no hay mensaje, no iniciamos el temporizador
         if (!message) return;
 
         const timer = setTimeout(() => {
             onClose();
-        }, 5000);
-        // Si el componente se desaparece antes de los 5 segundos,
+        }, 3500);
+        // Si el componente se desaparece antes de los n segundos,
         // cancelamos el timer para evitar fugas de memoria (memory leaks).
         return () => clearTimeout(timer);
     }, [message, onClose]);
