@@ -5,6 +5,7 @@ import Button from "./Button";
 import style from "./ModalAdmin.module.css"
 import SearchableInput from "./SearchableInput";
 import { deleteSchedule, saveScheduleData } from "../services/ScheduleService";
+import Toast from "./Toast";
 
 /**
  * Propiedades esperadas para el componente ModalAdmin.
@@ -62,6 +63,16 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
     // Mientras se hacen las peticiones
     const [isSending, setIsSending] = useState(false);
 
+    // Hooks del toast
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState<"success" | "danger" | "warning">("success");
+
+    // Ayudante para mostrar toast
+    const showToast = (message: string, type: "success" | "danger" | "warning") => {
+        setToastMessage(message);
+        setToastType(type);
+    };
+
     const clearFormData = () => setFormData({
         dia_semana: "",
         fase: 1,
@@ -85,25 +96,28 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
     }
 
     const handleSubmit = async () => {
-        if (!selectedCell || modalIsEmpty()) return;
+        if (!selectedCell || modalIsEmpty()) {
+            showToast("Datos invalidos", "warning");
+            return
+        };
 
         setIsSending(true);
 
         try {
-            
+
             const scheduleArray = await parseDataToSave(selectedCell);
             await saveScheduleData(scheduleArray);
-            
-            setScheduleData((prev) => ({
+
+            showToast("Clase Agregada","success");
+            await setScheduleData((prev) => ({
                 ...prev,
                 [selectedCell]: formData,
             }));
-            
+
             setIsModalOpen(false); // cierra el modal
         } catch (error) {
             console.error(error);
-            // delete scheduleData[selectedCell];
-            // setScheduleData(scheduleData);
+            showToast("Error al Agregar la Clase", "danger");
         } finally {
             setIsSending(false);
         }
@@ -115,7 +129,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
         const day = values[0];
         const start = values[1] + ":00";
         const end = values[2] + ":00";
-        
+
         const newData: ISchedule = {
             grupo_id: formData.grupo_id,
             dia_semana: day,
@@ -183,6 +197,12 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
                 </header>
 
                 <section className={`modal-card-body ${style.cardBody}`}>
+
+                    <Toast
+                        message={toastMessage}
+                        type={toastType}
+                        onClose={() => setToastMessage("")}
+                    />
 
                     <InputField
                         label={"Materia"}
