@@ -20,7 +20,7 @@ interface Props {
     selectedCell: CellKey | null;
 
     /** Nombre o número del laboratorio actual */
-    laboratory: string;
+    laboratory: number;
 
     /** Objeto que almacena todo el horario asignado por celdas */
     scheduleData: Record<CellKey, ISchedule>;
@@ -137,7 +137,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
             hora_fin: end,
             maestro: formData.maestro,
             materia: formData.materia,
-            fase: formData.fase,
+            fase: 1,
             laboratorio: formData.laboratorio,
         };
         return [newData];
