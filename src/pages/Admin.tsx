@@ -7,17 +7,20 @@ import { getScheduleFrom } from "../services/ScheduleService";
 import ModalAdmin from "../components/ModalAdmin";
 import TableAdmin from "../components/TableAdmin";
 import { obtenerNombresMaestros } from "../services/TeacherService";
+import Select from "../components/Select";
 
 type CellKey = string;
 
 export default function Admin() {
+    const LABORATORIES = ["Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4"];
+
     const navigate = useNavigate();
 
     // Mostrar/Ocultar el modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     // Saber que celda está abriendo
     const [selectedCell, setSelectedCell] = useState<CellKey | null>(null);
-    const [laboratory, setLaboratory] = useState<string>("1");
+    const [laboratory, setLaboratory] = useState<number>(1);
 
     // Todos los horarios de la tabla
     const [scheduleData, setScheduleData] = useState<Record<CellKey, ISchedule>>({});
@@ -30,7 +33,7 @@ export default function Admin() {
     const [loadingTeachers, setLoadingTeachers] = useState<boolean>(true);
 
     // Mostrar los horarios del laboratorio n
-    const loadScheduleFrom = async (labNumber: string) => {
+    const loadScheduleFrom = async (labNumber: number) => {
         setLoading(true);
         setScheduleData({});
         setLaboratory(labNumber);
@@ -50,7 +53,7 @@ export default function Admin() {
     };
 
     // Limpiar los datos devueltos por el backend y generar la cellkey
-    function parseSchedules(schedules: ISchedule[], laboratory: string): Record<string, any> {
+    function parseSchedules(schedules: ISchedule[], laboratory: number): Record<string, any> {
         const newScheduleData: Record<string, any> = {};
 
         schedules.forEach((s) => {
@@ -82,7 +85,7 @@ export default function Admin() {
 
     useEffect(() => {
         // Cargar horarios
-        loadScheduleFrom("1");
+        loadScheduleFrom(1);
 
         // Cargar maestros
         const cargarMaestros = async () => {
@@ -129,26 +132,13 @@ export default function Admin() {
 
                         <div className="level-right">
                             <div className="level-item">
-                                <div className="field">
-                                    <label className="label has-text-centered" style={{ color: "var(--color-fuente)" }}>Laboratorio</label>
-                                    <div className="control has-icons-left is-expanded">
-                                        <span className="select is-mobile">
-                                            <select
-                                                id="sLaboratoryNumber"
-                                                className="has-text-black"
-                                                style={{ backgroundColor: "var(--color-fondo)" }}
-                                                onChange={(e) => loadScheduleFrom(e.target.value)}>
-                                                <option value="1">Laboratorio 1</option>
-                                                <option value="2">Laboratorio 2</option>
-                                                <option value="3">Laboratorio 3</option>
-                                                <option value="4">Laboratorio 4</option>
-                                            </select>
-                                        </span>
-                                        <span className="icon is-small is-left">
-                                            <i className={`${loading ? 'fa-solid fa-spinner fa-spin-pulse' : 'fas fa-computer'} has-text-black`}></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <Select
+                                    options={LABORATORIES}
+                                    onChange={(e) => loadScheduleFrom(Number.parseInt(e))}
+                                    title="Seleccionar Laboratorio"
+                                    icon="fas fa-computer"
+                                    isLoading={loading}
+                                />
                             </div>
                         </div>
 

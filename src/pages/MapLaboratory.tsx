@@ -21,7 +21,7 @@ export default function MapLaboratory() {
         type: 'success' as 'success' | 'error'
     })
 
-    const viewHorary = (labNumber: string) => {
+    const viewHorary = (labNumber: number) => {
         console.log("Navegando al lab " + labNumber);
         setNavigating(true);
         getScheduleFrom(labNumber).then((data) => {
@@ -74,11 +74,11 @@ export default function MapLaboratory() {
                     ) : (
                         <div className={styles.mapContainer}>
                             <div className='columns is-centered is-multiline'>
-                                <CardMap laboratoryNumber="1" classInProgress="32" onClick={() => viewHorary("1")} />
-                                <CardMap laboratoryNumber="2" classInProgress="25" onClick={() => viewHorary("2")} />
+                                <CardMap laboratoryNumber="1" classInProgress="32" onClick={() => viewHorary(1)} />
+                                <CardMap laboratoryNumber="2" classInProgress="25" onClick={() => viewHorary(2)} />
 
-                                <CardMap laboratoryNumber="3" classInProgress="25" onClick={() => viewHorary("3")} />
-                                <CardMap laboratoryNumber="4" classInProgress="30" onClick={() => viewHorary("4")} />
+                                <CardMap laboratoryNumber="3" classInProgress="25" onClick={() => viewHorary(3)} />
+                                <CardMap laboratoryNumber="4" classInProgress="30" onClick={() => viewHorary(4)} />
                             </div>
                         </div>
                     )}

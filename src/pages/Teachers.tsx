@@ -112,7 +112,8 @@ export default () => {
                 contraseña: password,
                 carrera: selectedCareer
             }).then((res) => {
-                console.log(res)
+                console.log(res);
+                showToast("Docente Eliminado Correctamente", "success");
                 handleCancel();
                 cargarMaestros();
             });
@@ -173,7 +174,7 @@ export default () => {
                             type={"text"}
                             icon={"fas fa-id-badge"}
                             value={numberControl}
-                            onChange={setNumberControl}
+                            onChange={(value) => setNumberControl(value.toUpperCase())}
                         />
 
                         <InputField
@@ -182,7 +183,7 @@ export default () => {
                             type={"text"}
                             icon={"fa-solid fa-user-tie"}
                             value={name}
-                            onChange={setName}
+                            onChange={(value) => setName(value.toUpperCase())}
                         />
 
                         <SearchableInput
