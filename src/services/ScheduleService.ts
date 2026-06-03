@@ -1,44 +1,21 @@
-import axios, { AxiosError } from "axios";
 import type { ISchedule } from "../models/ISchedule";
+import apiClient from "./ApiClient";
 
 // Modelo de como enviamos la info
 interface ISchedulePayload {
-    maestro_nombre: string;
+    maestro: string;
     materia: string;
     dia_semana: string;
     hora_inicio: string;
     hora_fin: string;
     fase: number;
-    laboratorio: string;
+    laboratorio: number;
     grupo_id: string;
 }
 
-// Instancia de axios, con parametros predefinidos
-const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 5000, // Si el backend no responde en 5 segundos, se cancela todo
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
-
-apiClient.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-        // Atrapamos solo el error de cuando el servidor está apagado
-        if (error.code === 'ERR_NETWORK') {
-            console.warn("No se pudo conectar con el servidor.");
-        } else {
-            console.error(`Error en la API: ${error.response?.status}`, error.message);
-        }
-
-        return Promise.reject(error);
-    }
-);
-
 function parseData(data: ISchedule): ISchedulePayload {
     return {
-        "maestro_nombre": data.maestro.toUpperCase(),
+        "maestro": data.maestro.toUpperCase(),
         "materia": data.materia.toUpperCase(),
         "dia_semana": data.dia_semana,
         "hora_inicio": data.hora_inicio,
@@ -55,9 +32,11 @@ function parseData(data: ISchedule): ISchedulePayload {
  * @param {string} labNumber - El identificador o número del laboratorio (ej. '1', '2', 'A').
  * @returns {Promise<ISchedule[]>} Arreglo con todas las clases/horarios asignados a ese laboratorio.
  */
-export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> => {
+export const getScheduleFrom = async (labNumber: number): Promise<ISchedule[]> => {
     try {
-        const response = await apiClient.get<ISchedule[]>(`/api/horarios/${labNumber}`);
+        const response = await apiClient.get<ISchedule[]>(
+            `/api/horarios/${labNumber}`
+        );
         return response.data;
     } catch (error) {
         return [];
@@ -72,7 +51,7 @@ export const getScheduleFrom = async (labNumber: string): Promise<ISchedule[]> =
  * @throws {Error} Si la operación falla.
  */
 export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => {
-    console.log(schedule)
+    //console.log("Data to Save:", JSON.stringify(schedule))
     try {
         const dataSend: ISchedulePayload[] = schedule.map(parseData);
 
@@ -80,6 +59,7 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
             `/api/horarios/registrar_horario`,
             dataSend
         );
+
         return response.data;
     } catch (error) {
         throw new Error("Error al guardar el horario");
@@ -94,8 +74,9 @@ export const saveScheduleData = async (schedule: ISchedule[]): Promise<void> => 
  * @throws {Error} Si falla la petición de eliminación.
  */
 export const deleteSchedule = async (schedule: ISchedule) => {
+    //console.log(schedule)
     const dataToDelete: ISchedulePayload = parseData(schedule);
-    console.log("deleteShcedule", dataToDelete)
+    //console.log("deleteShcedule", dataToDelete)
     try {
         const response = await apiClient.delete(
             `/api/horarios/eliminar`,
