@@ -14,7 +14,7 @@ import { recordActivity } from "../services/LogBookService";
 import type { LogBookData } from "../services/LogBookService";
 import NotificationModal from "../components/NotificationModal";
 
-const CARRERAS_DISPONIBLES = ["IND", "INF", "ISC", "ADM", "ELE", "MEC"];
+const CARRERAS_DISPONIBLES = ["IND", "INF", "SIS", "ADM", "ELE", "MEC"];
 const LABORATORIOS_DISPONIBLES = ["Laboratorio 1", "Laboratorio 2", "Laboratorio 3", "Laboratorio 4"];
 
 export default function FormLogBook() {
