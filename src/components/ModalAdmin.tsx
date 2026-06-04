@@ -108,7 +108,7 @@ export default ({ isModalOpen, setIsModalOpen, selectedCell, laboratory, schedul
             const scheduleArray = await parseDataToSave(selectedCell);
             await saveScheduleData(scheduleArray);
 
-            showToast("Clase Agregada", "success");
+            //showToast("Clase Agregada", "success");
             setScheduleData((prev) => ({
                 ...prev,
                 [selectedCell]: scheduleArray[0],
